@@ -14,6 +14,7 @@
 ### Open in Your IDE
 - Open your favorite IDE (Integrated Development Environment).
 - Load the cloned repository into your IDE.
+- For the rest of commands after this you can use terminal from your IDE.
 
 ### Make Sure You Are in the `master` Branch
 1. Ensure you are in the `master` branch by running:
@@ -28,9 +29,9 @@
 ## Adding New Features or Making Changes
 
 ### Create a New Branch from `master`
-1. Create a new branch named `feature/feature-name`:
+1. Create a new branch named `feature/(feature-name)`. Example:`feature/new-API-to-get-user-details`:
     ```bash
-    git checkout -b feature/feature-name
+    git checkout -b feature/(feature-name)
     ```
 
 ### Add Your Code/Changes in That Branch
@@ -47,14 +48,14 @@
     ```
 3. Push your changes to the new branch:
     ```bash
-    git push origin feature/feature-name
+    git push origin feature/(feature-name)
     ```
 
 ### Start a Pull Request
 1. Navigate to the original repository on GitHub.
 2. Click on the "Pull requests" tab.
 3. Click the "New pull request" button.
-4. Select your `feature/feature-name` branch from the "compare" dropdown.
+4. Select your `feature/(feature-name)` branch from the "compare" dropdown.
 5. Review your changes and create the pull request by clicking the "Create pull request" button.
 
 Congratulations! You have now successfully submitted a pull request to merge your changes into the `main` branch.
