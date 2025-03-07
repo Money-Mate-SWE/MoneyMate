@@ -65,6 +65,42 @@
 4. Select your `feature/(feature-name)` branch from the "compare" dropdown.
 5. Review your changes and create the pull request by clicking the "Create pull request" button.
 
+### After Pull Request
+Once someone from the team approves the PR:
+
+1. **Navigate to the Pull Request**
+   Go to the pull request page on your Git hosting service (GitHub, GitLab, Bitbucket, etc.).
+
+2. **Review the Pull Request**
+   - Review the changes one final time.
+   - Make sure that the pull request is up-to-date with the base branch to prevent any merge conflicts. If not, click on the “Update branch” button if available, or manually rebase/merge the branch.
+
+3. **Click on the Merge Button**
+   On the pull request page, you will typically see a button to merge the pull request. This button could be labeled as:
+   - `Merge pull request` (GitHub)
+    Click on this button.
+
+4. **Select the Merge Method**
+  Select the merge method as:
+   - `Squash and merge`: Combines all commits into a single commit.
+
+5. **Confirm the Merge**
+   - You may be prompted to confirm the merge by clicking an additional confirm button.
+   - You might also be asked to enter a commit message. By default, the platform provides a pre-filled commit message, which you can edit if necessary.
+
+6. **Merge the Pull Request**
+   Once confirmed, the pull request will be merged into the base branch.
+
+### Post-Merge Actions
+1. **Delete the Branch**
+
+   After merging, you often have the option to delete the branch that was associated with the pull request. This helps keep the repository clean.
+
+   - In GitHub, you will see a `Delete branch` button.
+
+### Close the issue you are working on
+Mark the issue as Closed complete after you are done working
+
 Congratulations! You have now successfully submitted a pull request to merge your changes into the `main` branch.
 
 ## Continuing to Work on the Repository
