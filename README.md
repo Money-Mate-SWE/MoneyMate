@@ -1,5 +1,11 @@
 # MoneyMate
 
+# How to Run this locally
+
+## Run Front-End
+
+## Run Back-End
+
 # How to Work on a GitHub Repository
 
 ## First-Time Setup
@@ -36,6 +42,7 @@
 
 ### Add Your Code/Changes in That Branch
 - Make the necessary changes or add your code to the repository files in your new branch.
+- **Donot forget to add steps you had to do to install necessary dependencies in [How to Run this locally](#how-to-run-this-locally) section**
 
 ### Commit and Push Your Code
 1. Stage all your changes:
