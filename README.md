@@ -65,8 +65,15 @@
 4. Select your `feature/(feature-name)` branch from the "compare" dropdown.
 5. Review your changes and create the pull request by clicking the "Create pull request" button.
 
+### Approving a Pull Request
+1. Person who created PR cannot approve his own PR.
+2. First verify correct changes are pushed.
+3. Verify the the project works by running the pushed branch locally.
+4. Finally, verify the functionality added works as expected.
+
+
 ### After Pull Request
-Once someone from the team approves the PR:
+Once someone from the team verifies the code works and approves the PR:
 
 1. **Navigate to the Pull Request**
    Go to the pull request page on your Git hosting service (GitHub, GitLab, Bitbucket, etc.).
