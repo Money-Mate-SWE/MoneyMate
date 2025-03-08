@@ -1,4 +1,4 @@
-const User = require("../model/User");
+import User from "../model/User.js";
 
 class UserService {
     static async createUser(userData) {
@@ -11,16 +11,14 @@ class UserService {
     }
 
     static async findUserById(userId) {
-        return await
-            User.findById(userId).exec();
+        return await User.findById(userId).exec();
     }
 
     static async findUserByEmail(email) {
-        return await
-            User.findOne({ email: email }).exec();
+        return await User.findOne({ email: email }).exec();
     }
 
-    static async updateUser(userId, data) {
+    static async updateUser(userId, updatedData) {
         return User.findByIdAndUpdate(userId, updatedData).exec();
     }
 
@@ -29,4 +27,4 @@ class UserService {
     }
 }
 
-module.exports = UserService;
+export default UserService;
