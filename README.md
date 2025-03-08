@@ -5,7 +5,11 @@
 ## Run Front-End
 
 ## Run Back-End
-
+    after cloning
+    run cd backend
+    1- download all the necessary packages by typing "npm i"
+    2- run by typing npm run dev
+    3- if it does not tun contact Kritan/Suvanga
 # How to Work on a GitHub Repository
 
 ## First-Time Setup
