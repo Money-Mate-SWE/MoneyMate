@@ -10,13 +10,13 @@ connectDB();
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-app.use('/api',userRoutes);
+app.use('/api', userRoutes);
 
 
 
 const PORT = process.env.PORT || 4001;
 app.listen(PORT, () => {
-    
+
     console.log(`Server is running on port ${PORT}`);
-    
+
 });
