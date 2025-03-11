@@ -134,12 +134,14 @@ router.get('/getUserByEmail/:email', async (req, res) => {
 
 router.put('/updateUser/:userId', async (req, res) => {
     const userId = req.params.userId.trim();
-    const username = req.body.username.trim();
-    const email = req.body.email.trim();
 
-    if (!username || !email) {
+    const updateData = {};
+    if (req.body.username) updateData.username = req.body.username.trim();
+    if (req.body.email) updateData.email = req.body.email.trim();
+
+    if (!username && !email) {
         return res.status(400).json({
-            message: "Please enter username and email!"
+            message: "Please enter username or email to update!"
         });
     }
 
@@ -150,14 +152,47 @@ router.put('/updateUser/:userId', async (req, res) => {
     }
 
     try {
-        await UserService.updateUser(userId, { username, email });
+        await UserService.updateUser(userId, updateData);
         return res.status(200).json({
-            message: "User updated"
+            message: "User updated",
+            updateData
         });
     } catch (err) {
         console.error(err);
         return res.status(500).json({
             message: "There was an error while updating the User!"
+        });
+    }
+});
+
+router.delete('/deleteUser/:username', async (req, res) => {
+    const userName = req.params.username.trim();
+
+    if (!userName) {
+        return res.status(400).json({
+            message: "Please enter valid username!"
+        });
+    }
+
+    if (!await UserService.findUserByUserName(userName)) {
+        return res.status(404).json({
+            message: "User not found!"
+        });
+    }
+
+    try {
+        await UserService.deleteUser(userName);
+
+        if (!await UserService.findUserByUserName(userName)) {
+            return res.status(200).json({
+                message: "User deleted!"
+            });
+        }
+
+    } catch (err) {
+        console.error(err);
+        return res.status(500).json({
+            message: "There was an error while deleting the User!"
         });
     }
 });

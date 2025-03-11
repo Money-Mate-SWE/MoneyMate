@@ -1,6 +1,11 @@
 import mongoose from "mongoose";
 
 const debtSchema = new mongoose.Schema({
+
+    name: {
+        type: String,
+        required: true
+    },
     lender: {
         type: mongoose.Schema.Types.ObjectId,
         ref: "User", // Reference to the user who is owed money
@@ -24,7 +29,7 @@ const debtSchema = new mongoose.Schema({
     status: {
         type: String,
         enum: ["paid", "not paid"],
-        default: "pending",
+        default: "not paid",
     },
     description: {
         type: String,
