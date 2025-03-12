@@ -12,7 +12,7 @@ class DebtService {
 
     static async findDebtsByLender(lenderName) {
         return Debt.find({
-            $and: [
+            $or: [
                 { lender: lenderName },
                 { borrower: lenderName }
             ]
@@ -21,11 +21,11 @@ class DebtService {
 
     static async findPendingDebtsByLender(lenderName) {
         return Debt.find({
-            $and: [
+            $or: [
                 { lender: lenderName },
-                { borrower: lenderName },
-                { status: "not paid" }
-            ]
+                { borrower: lenderName }
+            ],
+            status: "not paid"
         }).sort({ createdAt: -1 }).exec();
     }
 

@@ -135,9 +135,11 @@ router.get('/getUserByEmail/:email', async (req, res) => {
 router.put('/updateUser/:userId', async (req, res) => {
     const userId = req.params.userId.trim();
 
-    const updateData = {};
-    if (req.body.username) updateData.username = req.body.username.trim();
-    if (req.body.email) updateData.email = req.body.email.trim();
+    if (!await UserService.findUserById(userId)) {
+        return res.status(404).json({
+            message: "User not found!"
+        });
+    }
 
     if (!username && !email) {
         return res.status(400).json({
@@ -145,11 +147,9 @@ router.put('/updateUser/:userId', async (req, res) => {
         });
     }
 
-    if (!await UserService.findUserById(userId)) {
-        return res.status(404).json({
-            message: "User not found!"
-        });
-    }
+    const updateData = {};
+    if (req.body.username) updateData.username = req.body.username.trim();
+    if (req.body.email) updateData.email = req.body.email.trim();
 
     try {
         await UserService.updateUser(userId, updateData);
