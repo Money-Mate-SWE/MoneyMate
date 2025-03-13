@@ -1,7 +1,8 @@
 import express from "express";
 import dotenv from "dotenv";
 import connectDB from "./services/mongodb.js";
-import userRoutes from "./routes/admin/User/index.js";
+import userRoutes from "./routes/admin/User/userRoute.js";
+import debtRoutes from "./routes/debt/debtRoute.js";
 
 const app = express();
 dotenv.config();
@@ -10,8 +11,8 @@ connectDB();
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-app.use('/api', userRoutes);
-
+app.use('/user', userRoutes);
+app.use('/debt', debtRoutes);
 
 
 const PORT = process.env.PORT || 4001;
