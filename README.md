@@ -41,7 +41,7 @@
 ### Create a New Branch from `master`
 1. Create a new branch named `feature/(feature-name)`. Example:`feature/new-API-to-get-user-details`:
     ```bash
-    git checkout -b feature/(feature-name)
+    git checkout -b feature/(feature-name) origin/main
     ```
 
 ### Add Your Code/Changes in That Branch
