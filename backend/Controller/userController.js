@@ -1,5 +1,5 @@
 import express from 'express';
-import UserService from '../../../services/UserService.js';
+import UserService from '../services/UserService.js';
 
 const isValidEmail = (email) => {
   const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
