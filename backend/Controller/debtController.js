@@ -1,4 +1,4 @@
-import DebtService from "../services/DebtService";
+import DebtService from "../services/DebtService.js";
 
 const createDebt = async (req, res) => {
     const { debtBillData, debtItemData } = req.body;
