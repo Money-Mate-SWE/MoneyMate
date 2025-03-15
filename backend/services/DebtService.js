@@ -6,7 +6,7 @@ class DebtService {
     static async createDebt(debtBillData, debtItemData) {
         const newDebt = new DebtBill(debtBillData);
         const savedDebt = await newDebt.save();
-        debtItemData.debtBillId = savedDebt._id;
+        debtItemData.BillId = savedDebt._id;
 
         const newDebtItem = new DebtItem(debtItemData);
         const savedDebtItem = await newDebtItem.save();
@@ -14,63 +14,67 @@ class DebtService {
     }
 
     static async findDebtById(debtId) {
-        return Debt.findById(debtId).sort({ createdAt: -1 }).exec();
+        return DebtBill.findById(debtId).sort({ createdAt: -1 }).exec();
     }
 
-    static async findDebItemByDebtId(debtId) {
-        return DebtItem.find({ debtBillId: debtId }).exec();
+    static async findDebtItemsByDebtId(debtBillId) {
+        return DebtItem.find({ BillId: debtBillId }).exec();
     }
 
-    static async findDebtItemsByMultipleDebtIds(debtIds) {
-        return DebtItem.find({ debtBillId: { $in: debtIds } }).exec();
+    static async findDebtByMultipleDebtIds(debtIds) {
+        return DebtBill.find({ _id: { $in: debtIds } }).exec();
     }
 
-    static async findDebtsByLender(lenderName) {
-        return Debt.find({
+    static async findDebtsByLender(lenderId) {
+        return DebtBill.find({
             $or: [
-                { lender: lenderName },
-                { borrower: lenderName }
+                { lender: lenderId },
+                { borrower: lenderId }
             ]
         }).sort({ createdAt: -1 }).exec();
     }
 
-    static async findPendingDebtsByLender(lenderName) {
-        return Debt.find({
+    static async findPendingDebtsByLender(lenderId) {
+        return DebtBill.find({
             $and: [
-                { $or: [{ lender: lenderName }, { borrower: lenderName }] },
+                { $or: [{ lender: lenderId }, { borrower: lenderId }] },
                 { $or: [{ status: "not paid" }, { status: "partially paid" }] }
             ]
         }).sort({ createdAt: -1 }).exec();
     }
 
-    static async findDebtsByLenderAndBorrower(lenderName, borrowerName) {
-        return Debt.find({
+    static async findDebtsByLenderAndBorrower(lenderId, borrowerId) {
+        return DebtBill.find({
             $and: [
-                { $or: [{ lender: lenderName }, { borrower: lenderName }] },
-                { $or: [{ lender: borrowerName }, { borrower: borrowerName }] }
+                { $or: [{ lender: lenderId }, { borrower: lenderId }] },
+                { $or: [{ lender: borrowerId }, { borrower: borrowerId }] }
             ]
         }).sort({ createdAt: -1 }).exec();
     }
 
-    static async findPendingDebtsByLenderAndBorrower(lenderName, borrowerName) {
-        return Debt.find({
+    static async findPendingDebtsByLenderAndBorrower(lenderId, borrowerId) {
+        return DebtBill.find({
             $and: [
-                { $or: [{ lender: lenderName }, { borrower: lenderName }] },
-                { $or: [{ lender: borrowerName }, { borrower: borrowerName }] },
+                { $or: [{ lender: lenderId }, { borrower: lenderId }] },
+                { $or: [{ lender: borrowerId }, { borrower: borrowerId }] },
                 { $or: [{ status: "not paid" }, { status: "partially paid" }] }
             ]
         }).sort({ createdAt: -1 }).exec();
     }
 
-    //update both billl and item
     static async updateDebt(debtId, updatedData) {
-        return Debt.findByIdAndUpdate(debtId, updatedData).exec();
+        const updatedDebt = await DebtBill.findByIdAndUpdate(debtId, updatedData, { new: true }).exec();
+        if (updatedData.items) {
+            for (const item of updatedData.items) {
+                await DebtItem.findByIdAndUpdate(item._id, item, { new: true }).exec();
+            }
+        }
+        return updatedDebt;
     }
 
-    //delete both bill and item
     static async deleteDebt(debtId) {
-        return Debt.deleteOne({ _id: debtId }).exec();
+        await DebtItem.deleteMany({ BillId: debtId }).exec();
+        return DebtBill.deleteOne({ _id: debtId }).exec();
     }
 }
-
 export default DebtService;

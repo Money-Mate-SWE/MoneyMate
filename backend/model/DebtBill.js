@@ -32,10 +32,12 @@ const debtBillSchema = new mongoose.Schema({
     lender: {
         type: mongoose.Schema.Types.ObjectId,
         ref: "User",
+        required: true,
     },
     participant: [{
         type: mongoose.Schema.Types.ObjectId,
         ref: "User",
+        required: true,
     }],
 }, {
     timestamps: true

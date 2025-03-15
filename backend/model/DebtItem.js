@@ -26,3 +26,7 @@ const debtItemSchema = new mongoose.Schema({
         required: true
     }]
 });
+
+const DebtItem = mongoose.model("DebtItem", debtItemSchema);
+
+export default DebtItem;

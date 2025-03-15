@@ -2,20 +2,20 @@ import express from 'express';
 import UserService from '../services/UserService.js';
 
 const isValidEmail = (email) => {
-  const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-  return re.test(String(email).toLowerCase());
+    const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return re.test(String(email).toLowerCase());
 };
 
 
-const createUser =  async (req, res) => {
+const createUser = async (req, res) => {
     const username = req.body.username.trim();
     const email = req.body.email.trim().toLowerCase();
 
     if (!username || username.length < 3) {
-      return res.status(400).json({ 
-        message: 'Username must be at least 3 characters long' 
-      });
-       // req.session.messages.push({
+        return res.status(400).json({
+            message: 'Username must be at least 3 characters long'
+        });
+        // req.session.messages.push({
         //     type: "warning",
         //     text: "Please enter valid username!",
         // });
@@ -23,17 +23,17 @@ const createUser =  async (req, res) => {
     }
 
     if (!email || !isValidEmail(email)) {
-      return res.status(400).json({
-        message: 'Invalid email address' 
-      });
+        return res.status(400).json({
+            message: 'Invalid email address'
+        });
     }
-  
-    try{
+
+    try {
         if (await UserService.findUserByUserName(username) || await UserService.findUserByEmail(email)) {
             return res.status(409).json({
                 message: "Username or email you entered already exists!"
             });
-             // req.session.messages.push({
+            // req.session.messages.push({
             //     type: "warning",
             //     text: "User already exists!",
             // });
@@ -41,7 +41,7 @@ const createUser =  async (req, res) => {
         }
 
         await UserService.createUser({ username, email });
-      
+
         return res.status(201).json({
             message: "User created",
             username,
@@ -174,6 +174,7 @@ const updateUser = async (req, res) => {
 
 const deleteUser = async (req, res) => {
     const userName = req.params.username.trim();
+    const email = req.query.email;
 
     if (!userName) {
         return res.status(400).json({
@@ -181,34 +182,51 @@ const deleteUser = async (req, res) => {
         });
     }
 
-    if (!await UserService.findUserByUserName(userName)) {
+    const userByName = await UserService.findUserByUserName(userName)
+
+    if (!userByName) {
         return res.status(404).json({
-            message: "User not found!"
+            message: "User not found by name!"
         });
     }
 
-    try {
-        await UserService.deleteUser(userName);
+    const userByEmail = await UserService.findUserByEmail(email);
 
-        if (!await UserService.findUserByUserName(userName)) {
-            return res.status(200).json({
-                message: "User deleted!"
+    if (!userByEmail) {
+        return res.status(404).json({
+            message: "User not found by email!"
+        });
+    }
+
+    if (userByName == userByEmail) {
+        try {
+            await UserService.deleteUser(userName);
+
+            if (!await UserService.findUserByUserName(userName)) {
+                return res.status(200).json({
+                    message: "User deleted!"
+                });
+            }
+
+        } catch (err) {
+            console.error(err);
+            return res.status(500).json({
+                message: "There was an error while deleting the User!"
             });
         }
-
-    } catch (err) {
-        console.error(err);
-        return res.status(500).json({
-            message: "There was an error while deleting the User!"
+    }
+    else {
+        return res.status(400).json({
+            message: "User name and email did not match!"
         });
     }
 };
 
 export default {
-  createUser,
-  getUserByUsername,
-  getUserById,
-  getUserByEmail,
-  updateUser,
-  deleteUser
+    createUser,
+    getUserByName,
+    getUserByUserId,
+    getUserByUserEmail,
+    updateUser,
+    deleteUser
 };
