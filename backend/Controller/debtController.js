@@ -15,18 +15,44 @@ const createDebt = async (req, res) => {
         });
     }
 
-    if (Array.isArray(debtItemData) || debtItemData.length > 1) {
-        for (const item of debtItemData) {
-            if (!item?.item || !item?.amount || !item?.borrower) {
-                return res.status(400).json({
-                    message: "Please enter all required Item fields!"
-                });
-            }
+    if (!Array.isArray(debtItemData) || debtItemData.length < 1) {
+        return res.status(400).json({
+            message: "Please add at least one item!"
+        });
+    }
+
+    for (const item of debtItemData) {
+        if (!item?.item || !item?.amount || !item?.borrower) {
+            return res.status(400).json({
+                message: "Please enter all required Item fields!"
+            });
         }
     }
 
     try {
         const { savedDebt, savedDebtItem } = await DebtService.createDebt(debtBillData, debtItemData);
+
+        //right now we can only divide equally
+        await DebtService.calculateDueAmounts(savedDebt._id);
+
+
+        //Need to handle this
+        // Handle the scenario where person1 owes money to person2 and person1 adds a bill with person2 as the borrower
+        const lenderId = debtBillData.lender;
+        const borrowersArray = debtBillData.participant;
+
+        for (const borrower of borrowersArray) {
+            const existingDebts = await DebtService.findDebtsByLenderAndBorrower(lenderId, borrower.person);
+            console.log("Existing debts: ", existingDebts.length);
+            if (existingDebts.length > 0) {
+                console.log("Processing existing debts between lender and borrower");
+                for (const debt of existingDebts) {
+                    await DebtService.processPayment(lenderId, borrower.person, debt.amount);
+                    console.log("Processed payment for debt: ");
+                }
+            }
+        }
+
         return res.status(201).json({ savedDebt, savedDebtItem });
     } catch (err) {
         console.error(err);
@@ -122,7 +148,7 @@ const getDebtsByLender = async (req, res) => {
 };
 
 const getPendingDebtsByLender = async (req, res) => {
-    const lenderId = req.params.lenderId.trim();
+    const lenderId = req.params.lenderId;
 
     if (!lenderId) {
         return res.status(400).json({
@@ -230,6 +256,26 @@ const deleteDebt = async (req, res) => {
     }
 };
 
+const processPayment = async (req, res) => {
+    const { payerId, payeeId, amount } = req.body;
+
+    if (!payerId || !payeeId || !amount || amount <= 0) {
+        return res.status(400).json({
+            message: "Please provide valid payer ID, payee ID, and amount!"
+        });
+    }
+
+    try {
+        const result = await DebtService.processPayment(payerId, payeeId, amount);
+        return res.status(200).json(result);
+    } catch (err) {
+        console.error(err);
+        return res.status(500).json({
+            message: "There was an error while processing the payment!"
+        });
+    }
+};
+
 export default {
     createDebt,
     getDebtById,
@@ -240,5 +286,6 @@ export default {
     getDebtsByLenderAndBorrower,
     getPendingDebtsByLenderAndBorrower,
     updateDebt,
-    deleteDebt
+    deleteDebt,
+    processPayment
 };

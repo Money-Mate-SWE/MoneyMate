@@ -21,10 +21,22 @@ const debtItemSchema = new mongoose.Schema({
         default: "USD"
     },
     borrower: [{
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "User",
-        required: true
-    }]
+        person: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "User",
+            required: true,
+        },
+        paid: {
+            type: Number,
+            required: true,
+            default: 0,
+        },
+        due: {
+            type: Number,
+            required: true,
+            default: 0,
+        },
+    },],
 });
 
 const DebtItem = mongoose.model("DebtItem", debtItemSchema);

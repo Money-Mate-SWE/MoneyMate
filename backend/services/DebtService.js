@@ -1,15 +1,18 @@
 import DebtBill from "../model/DebtBill.js";
 import DebtItem from "../model/DebtItem.js";
-
+import { calculateAutoDueAmounts, processPayment } from "../utils/debtUtils.js";
 
 class DebtService {
     static async createDebt(debtBillData, debtItemData) {
         const newDebt = new DebtBill(debtBillData);
         const savedDebt = await newDebt.save();
-        debtItemData.BillId = savedDebt._id;
 
-        const newDebtItem = new DebtItem(debtItemData);
-        const savedDebtItem = await newDebtItem.save();
+        const debtItemsWithBillId = debtItemData.map(item => ({
+            ...item,
+            BillId: savedDebt._id
+        }));
+
+        const savedDebtItem = await DebtItem.insertMany(debtItemsWithBillId);
         return { savedDebt, savedDebtItem };
     }
 
@@ -29,7 +32,7 @@ class DebtService {
         return DebtBill.find({
             $or: [
                 { lender: lenderId },
-                { borrower: lenderId }
+                { participant: { $elemMatch: { person: lenderId } } }
             ]
         }).sort({ createdAt: -1 }).exec();
     }
@@ -76,5 +79,14 @@ class DebtService {
         await DebtItem.deleteMany({ BillId: debtId }).exec();
         return DebtBill.deleteOne({ _id: debtId }).exec();
     }
+
+    static async calculateDueAmounts(billId) {
+        return calculateAutoDueAmounts(billId);
+    }
+
+    static async processPayment(payerId, payeeId, amount) {
+        return processPayment(payerId, payeeId, amount);
+    }
 }
+
 export default DebtService;

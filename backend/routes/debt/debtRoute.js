@@ -10,7 +10,7 @@ router.get('/getDebtItemsByDebtId/:debtId', DebtController.getDebtItemsByDebtId)
 
 router.get('/getDebtByMultipleDebtIds', DebtController.getDebtByMultipleDebtIds);
 
-router.get('/getDebt/:lender', DebtController.getPendingDebtsByLender);
+router.get('/getDebtByLender/:lenderId', DebtController.getPendingDebtsByLender);
 
 router.get('/getDebtHistory/:lender', DebtController.getDebtsByLender);
 
@@ -21,5 +21,7 @@ router.get('/getDebtHistoryByBorrower', DebtController.getDebtsByLenderAndBorrow
 router.put('/updateDebt/:debtId', DebtController.updateDebt);
 
 router.delete('/deleteDebt/:debtId', DebtController.deleteDebt);
+
+router.post('/processPayment', DebtController.processPayment);
 
 export default router;

@@ -21,10 +21,6 @@ const debtBillSchema = new mongoose.Schema({
         enum: ["paid", "not paid", "partially paid"],
         default: "not paid",
     },
-    item: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "DebtItem",
-    },
     description: {
         type: String,
         trim: true,
@@ -35,10 +31,22 @@ const debtBillSchema = new mongoose.Schema({
         required: true,
     },
     participant: [{
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "User",
-        required: true,
-    }],
+        person: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "User",
+            required: true,
+        },
+        paid: {
+            type: Number,
+            required: true,
+            default: 0,
+        },
+        due: {
+            type: Number,
+            required: true,
+            default: 0,
+        },
+    },],
 }, {
     timestamps: true
 });
