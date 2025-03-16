@@ -14,9 +14,11 @@ router.get('/getDebtByLender/:lenderId', DebtController.getPendingDebtsByLender)
 
 router.get('/getDebtHistoryByLender/:lenderId', DebtController.getDebtsByLender);
 
-router.get('/getDebtByBorrower', DebtController.getPendingDebtsByLenderAndBorrower);
+router.get('/getDebtWithConnectedUser', DebtController.getPendingDebtsWithConnectedUser);
 
-router.get('/getDebtHistoryByBorrower', DebtController.getDebtsByLenderAndBorrower);
+router.get('/getDebtHistoryWithConnectedUser', DebtController.getDebtsWithConnectedUser);
+
+router.get('/getByLenderAndBorrower', DebtController.getPendingDebtsByLenderAndBorrower);
 
 router.put('/updateDebt/:debtId', DebtController.updateDebt);
 

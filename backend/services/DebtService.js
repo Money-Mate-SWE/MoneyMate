@@ -59,13 +59,23 @@ class DebtService {
     static async findDebtsByLenderAndBorrower(lenderId, borrowerId) {
         return DebtBill.find({
             $and: [
+                { lender: lenderId },
+                { "participant.person": borrowerId },
+                { $or: [{ status: "not paid" }, { status: "partially paid" }] }
+            ]
+        }).sort({ createdAt: -1 }).exec();
+    }
+
+    static async findDebtsWithConnectedUser(lenderId, borrowerId) {
+        return DebtBill.find({
+            $and: [
                 { $or: [{ lender: lenderId }, { "participant.person": lenderId }] },
                 { $or: [{ lender: borrowerId }, { "participant.person": borrowerId }] }
             ]
         }).sort({ createdAt: -1 }).exec();
     }
 
-    static async findPendingDebtsByLenderAndBorrower(lenderId, borrowerId) {
+    static async findPendingDebtsWithConnectedUser(lenderId, borrowerId) {
         return DebtBill.find({
             $and: [
                 { $or: [{ lender: lenderId }, { "participant.person": lenderId }] },

@@ -42,13 +42,15 @@ const createDebt = async (req, res) => {
         const borrowersArray = debtBillData.participant;
 
         for (const borrower of borrowersArray) {
-            const existingDebts = await DebtService.findDebtsByLenderAndBorrower(lenderId, borrower.person);
+            const existingDebts = await DebtService.findDebtsByLenderAndBorrower(borrower.person, lenderId);
             console.log("Existing debts: ", existingDebts.length);
             if (existingDebts.length > 0) {
                 console.log("Processing existing debts between lender and borrower");
                 for (const debt of existingDebts) {
-                    await DebtService.processPayment(lenderId, borrower.person, debt.amount);
-                    console.log("Processed payment for debt: ");
+                    if (debt._id.toString() !== savedDebt._id.toString()) {
+                        await DebtService.processPayment(lenderId, borrower.person, debt.amount);
+                        console.log("Processed payment for debt: ");
+                    }
                 }
             }
         }
@@ -167,7 +169,7 @@ const getPendingDebtsByLender = async (req, res) => {
     }
 };
 
-const getDebtsByLenderAndBorrower = async (req, res) => {
+const getDebtsWithConnectedUser = async (req, res) => {
     const { lenderId, borrowerId } = req.query;
 
     if (!lenderId || !borrowerId) {
@@ -177,7 +179,27 @@ const getDebtsByLenderAndBorrower = async (req, res) => {
     }
 
     try {
-        const debts = await DebtService.findDebtsByLenderAndBorrower(lenderId, borrowerId);
+        const debts = await DebtService.findDebtsWithConnectedUser(lenderId, borrowerId);
+        return res.status(200).json(debts);
+    } catch (err) {
+        console.error(err);
+        return res.status(500).json({
+            message: "There was an error while fetching the Debts!"
+        });
+    }
+};
+
+const getPendingDebtsWithConnectedUser = async (req, res) => {
+    const { lenderId, borrowerId } = req.query;
+
+    if (!lenderId || !borrowerId) {
+        return res.status(400).json({
+            message: "Please enter Lender and Borrower!"
+        });
+    }
+
+    try {
+        const debts = await DebtService.findPendingDebtsWithConnectedUser(lenderId, borrowerId);
         return res.status(200).json(debts);
     } catch (err) {
         console.error(err);
@@ -197,7 +219,7 @@ const getPendingDebtsByLenderAndBorrower = async (req, res) => {
     }
 
     try {
-        const debts = await DebtService.findPendingDebtsByLenderAndBorrower(lenderId, borrowerId);
+        const debts = await DebtService.findDebtsByLenderAndBorrower(lenderId, borrowerId);
         return res.status(200).json(debts);
     } catch (err) {
         console.error(err);
@@ -283,7 +305,8 @@ export default {
     getDebtByMultipleDebtIds,
     getDebtsByLender,
     getPendingDebtsByLender,
-    getDebtsByLenderAndBorrower,
+    getDebtsWithConnectedUser,
+    getPendingDebtsWithConnectedUser,
     getPendingDebtsByLenderAndBorrower,
     updateDebt,
     deleteDebt,
