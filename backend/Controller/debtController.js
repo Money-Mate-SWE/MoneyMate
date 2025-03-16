@@ -128,7 +128,7 @@ const getDebtByMultipleDebtIds = async (req, res) => {
 };
 
 const getDebtsByLender = async (req, res) => {
-    const lenderId = req.params.lenderId.trim();
+    const lenderId = req.params.lenderId;
 
     if (!lenderId) {
         return res.status(400).json({
@@ -208,7 +208,7 @@ const getPendingDebtsByLenderAndBorrower = async (req, res) => {
 };
 
 const updateDebt = async (req, res) => {
-    const debtId = req.params.debtId.trim();
+    const debtId = req.params.debtId;
     const updatedData = req.body;
 
     if (!debtId) {

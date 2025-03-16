@@ -4,16 +4,21 @@ import { calculateAutoDueAmounts, processPayment } from "../utils/debtUtils.js";
 
 class DebtService {
     static async createDebt(debtBillData, debtItemData) {
-        const newDebt = new DebtBill(debtBillData);
-        const savedDebt = await newDebt.save();
+        try {
+            const newDebt = new DebtBill(debtBillData);
+            const savedDebt = await newDebt.save();
 
-        const debtItemsWithBillId = debtItemData.map(item => ({
-            ...item,
-            BillId: savedDebt._id
-        }));
+            const debtItemsWithBillId = debtItemData.map(item => ({
+                ...item,
+                BillId: savedDebt._id
+            }));
 
-        const savedDebtItem = await DebtItem.insertMany(debtItemsWithBillId);
-        return { savedDebt, savedDebtItem };
+            const savedDebtItem = await DebtItem.insertMany(debtItemsWithBillId);
+            return { savedDebt, savedDebtItem };
+        } catch (error) {
+            console.error("Error creating debt:", error);
+            throw error;
+        }
     }
 
     static async findDebtById(debtId) {
@@ -29,18 +34,23 @@ class DebtService {
     }
 
     static async findDebtsByLender(lenderId) {
-        return DebtBill.find({
-            $or: [
-                { lender: lenderId },
-                { participant: { $elemMatch: { person: lenderId } } }
-            ]
-        }).sort({ createdAt: -1 }).exec();
+        try {
+            return DebtBill.find({
+                $or: [
+                    { lender: lenderId },
+                    { "participant.person": lenderId }
+                ]
+            }).sort({ createdAt: -1 }).exec();
+        } catch (error) {
+            console.error("Error finding debts by lender:", error);
+            throw error;
+        }
     }
 
     static async findPendingDebtsByLender(lenderId) {
         return DebtBill.find({
             $and: [
-                { $or: [{ lender: lenderId }, { borrower: lenderId }] },
+                { $or: [{ lender: lenderId }, { "participant.person": lenderId }] },
                 { $or: [{ status: "not paid" }, { status: "partially paid" }] }
             ]
         }).sort({ createdAt: -1 }).exec();
@@ -49,8 +59,8 @@ class DebtService {
     static async findDebtsByLenderAndBorrower(lenderId, borrowerId) {
         return DebtBill.find({
             $and: [
-                { $or: [{ lender: lenderId }, { borrower: lenderId }] },
-                { $or: [{ lender: borrowerId }, { borrower: borrowerId }] }
+                { $or: [{ lender: lenderId }, { "participant.person": lenderId }] },
+                { $or: [{ lender: borrowerId }, { "participant.person": borrowerId }] }
             ]
         }).sort({ createdAt: -1 }).exec();
     }
@@ -58,8 +68,8 @@ class DebtService {
     static async findPendingDebtsByLenderAndBorrower(lenderId, borrowerId) {
         return DebtBill.find({
             $and: [
-                { $or: [{ lender: lenderId }, { borrower: lenderId }] },
-                { $or: [{ lender: borrowerId }, { borrower: borrowerId }] },
+                { $or: [{ lender: lenderId }, { "participant.person": lenderId }] },
+                { $or: [{ lender: borrowerId }, { "participant.person": borrowerId }] },
                 { $or: [{ status: "not paid" }, { status: "partially paid" }] }
             ]
         }).sort({ createdAt: -1 }).exec();
@@ -72,7 +82,7 @@ class DebtService {
                 await DebtItem.findByIdAndUpdate(item._id, item, { new: true }).exec();
             }
         }
-        return updatedDebt;
+        return { updatedDebt, updatedData };
     }
 
     static async deleteDebt(debtId) {

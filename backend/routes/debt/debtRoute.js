@@ -12,7 +12,7 @@ router.get('/getDebtByMultipleDebtIds', DebtController.getDebtByMultipleDebtIds)
 
 router.get('/getDebtByLender/:lenderId', DebtController.getPendingDebtsByLender);
 
-router.get('/getDebtHistory/:lender', DebtController.getDebtsByLender);
+router.get('/getDebtHistoryByLender/:lenderId', DebtController.getDebtsByLender);
 
 router.get('/getDebtByBorrower', DebtController.getPendingDebtsByLenderAndBorrower);
 
