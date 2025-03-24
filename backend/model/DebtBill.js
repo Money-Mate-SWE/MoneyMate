@@ -37,12 +37,12 @@ const debtBillSchema = new mongoose.Schema({
             required: true,
         },
         paid: {
-            type: mongoose.Schema.Types.Decimal128,
+            type: Number,
             required: true,
             default: 0,
         },
         due: {
-            type: mongoose.Schema.Types.Decimal128,
+            type: Number,
             required: true,
             default: 0,
         },

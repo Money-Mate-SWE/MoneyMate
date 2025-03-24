@@ -93,14 +93,17 @@ export const adjustDebtsForNewExpense = async (payerId, payeeId, amount) => {
     const debtsOwedByPayer = await DebtBill.find({
         "participant.person": payerId,
         lender: payeeId,
-        status: { $in: ["not paid", "partially paid"] }
+        status: { $in: ["not paid", "partially paid"] },
+        "participant.due": { $gt: 0 }
+
     }).sort({ createdAt: 1 }).exec();
 
     // Fetch debts where Person 2 (payeeId) owes Person 1 (payerId)
     const debtsOwedByPayee = await DebtBill.find({
         "participant.person": payeeId,
         lender: payerId,
-        status: { $in: ["not paid", "partially paid"] }
+        status: { $in: ["not paid", "partially paid"] },
+        "participant.due": { $gt: 0 }
     }).sort({ createdAt: -1 }).exec();
 
     let remainingAmount = amount;
@@ -151,53 +154,51 @@ export const adjustDebtsForNewExpense = async (payerId, payeeId, amount) => {
         }
     }
 
-    console.log("Remaining amount for new bill: ", remainingAmountForNewBill);
 
-    // Adjust debts where Person 2 owes Person 1
-    for (const bill of debtsOwedByPayee) {
-        const debtItems = await DebtItem.find({ BillId: bill._id }).exec();
+    if (remainingAmountForNewBill > 0) {
+        // Adjust debts where Person 2 owes Person 1
+        for (const bill of debtsOwedByPayee) {
+            const debtItems = await DebtItem.find({ BillId: bill._id }).exec();
 
-        for (const item of debtItems) {
-            const borrower = item.borrower.find(b => b.person.toString() === payeeId.toString());
+            for (const item of debtItems) {
+                const borrower = item.borrower.find(b => b.person.toString() === payeeId.toString());
 
-            if (borrower && remainingAmountForNewBill > 0) {
-                const amountToPay = Math.min(borrower.due, remainingAmountForNewBill);
-                borrower.paid += amountToPay;
-                borrower.due -= amountToPay;
-                remainingAmountForNewBill -= amountToPay;
+                if (borrower && remainingAmountForNewBill > 0) {
+                    const amountToPay = Math.min(borrower.due, remainingAmountForNewBill);
+                    borrower.paid += amountToPay;
+                    borrower.due -= amountToPay;
+                    remainingAmountForNewBill -= amountToPay;
 
-                if (borrower.due === 0) {
-                    borrower.due = 0;
+                    if (borrower.due === 0) {
+                        borrower.due = 0;
+                    }
+
+                    await item.save();
+                }
+            }
+
+            const participant = bill.participant.find(p => p.person.toString() === payeeId.toString());
+            if (participant) {
+
+                participant.paid += amount - remainingAmountForNewBill;
+                participant.due -= amount - remainingAmountForNewBill;
+
+                if (participant.due === 0) {
+                    participant.due = 0;
                 }
 
-                await item.save();
-            }
-        }
+                if (bill.participant.every(p => p.due === 0)) {
+                    bill.status = "paid";
+                } else if (bill.participant.some(p => p.due >= 0 && p.paid > 0)) {
+                    bill.status = "partially paid";
+                }
 
-        const participant = bill.participant.find(p => p.person.toString() === payeeId.toString());
-        if (participant) {
-
-            console.log(amount, remainingAmountForNewBill)
-            console.log(participant.paid, participant.due)
-            participant.paid += amount - remainingAmountForNewBill;
-            participant.due -= amount - remainingAmountForNewBill;
-            console.log(participant.paid, participant.due)
-
-            if (participant.due === 0) {
-                participant.due = 0;
+                await bill.save();
             }
 
-            if (bill.participant.every(p => p.due === 0)) {
-                bill.status = "paid";
-            } else if (bill.participant.some(p => p.due >= 0 && p.paid > 0)) {
-                bill.status = "partially paid";
+            if (remainingAmountForNewBill === 0) {
+                break;
             }
-
-            await bill.save();
-        }
-
-        if (remainingAmountForNewBill === 0) {
-            break;
         }
     }
 

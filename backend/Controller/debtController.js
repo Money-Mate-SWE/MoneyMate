@@ -43,12 +43,9 @@ const createDebt = async (req, res) => {
 
         for (const borrower of borrowersArray) {
             const amount = updatedDebt.participant.find(p => p.person.toString() === borrower.person.toString())?.due || 0;
-            console.log(updatedDebt.participant.find(p => p.person.toString() === borrower.person.toString()));
 
-            const existingDebts = await DebtService.findDebtsByLenderAndBorrower(borrower.person, lenderId);
-            console.log("Existing debts: ", existingDebts.length);
+            const existingDebts = await DebtService.findPendingDebtsByLenderAndBorrower(borrower.person, lenderId);
             if (existingDebts.length > 0) {
-                console.log("Processing existing debts between lender and borrower");
                 for (const debt of existingDebts) {
                     if (debt._id.toString() !== savedDebt._id.toString()) {
 
