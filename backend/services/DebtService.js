@@ -1,6 +1,6 @@
 import DebtBill from "../model/DebtBill.js";
 import DebtItem from "../model/DebtItem.js";
-import { calculateAutoDueAmounts, processPayment } from "../utils/debtUtils.js";
+import { calculateAutoDueAmounts, processPayment, adjustDebtsForNewExpense } from "../utils/debtUtils.js";
 
 class DebtService {
     static async createDebt(debtBillData, debtItemData) {
@@ -106,6 +106,10 @@ class DebtService {
 
     static async processPayment(payerId, payeeId, amount) {
         return processPayment(payerId, payeeId, amount);
+    }
+
+    static async adjustDebtsForNewExpense(payerId, payeeId, amount) {
+        return adjustDebtsForNewExpense(payerId, payeeId, amount);
     }
 }
 

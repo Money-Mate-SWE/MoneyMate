@@ -35,20 +35,27 @@ const createDebt = async (req, res) => {
         //right now we can only divide equally
         await DebtService.calculateDueAmounts(savedDebt._id);
 
-
+        const updatedDebt = await DebtService.findDebtById(savedDebt._id);
         //Need to handle this
         // Handle the scenario where person1 owes money to person2 and person1 adds a bill with person2 as the borrower
         const lenderId = debtBillData.lender;
         const borrowersArray = debtBillData.participant;
 
         for (const borrower of borrowersArray) {
+            const amount = updatedDebt.participant.find(p => p.person.toString() === borrower.person.toString())?.due || 0;
+            console.log(updatedDebt.participant.find(p => p.person.toString() === borrower.person.toString()));
+
             const existingDebts = await DebtService.findDebtsByLenderAndBorrower(borrower.person, lenderId);
             console.log("Existing debts: ", existingDebts.length);
             if (existingDebts.length > 0) {
                 console.log("Processing existing debts between lender and borrower");
                 for (const debt of existingDebts) {
                     if (debt._id.toString() !== savedDebt._id.toString()) {
-                        await DebtService.processPayment(lenderId, borrower.person, debt.amount);
+
+                        await DebtService.adjustDebtsForNewExpense(lenderId, borrower.person, amount);
+
+                        /* For reference: Comment previous and uncomment below if not working */
+                        // await DebtService.processPayment(lenderId, borrower.person, debt.amount);
                         console.log("Processed payment for debt: ");
                     }
                 }
