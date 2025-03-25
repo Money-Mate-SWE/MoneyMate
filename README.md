@@ -3,6 +3,10 @@
 # How to Run this locally
 
 ## Run Front-End
+Type this in your terminal:
+"npm install -g expo-cli"
+Type : "expo --version" To make sure expo is installed correctly
+
 
 ## Run Back-End
 
