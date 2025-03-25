@@ -1,6 +1,6 @@
 # MoneyMate
 
-# How to Run this locally
+# How to Run this locally in the machine
 
 ## Run Front-End
 Type this in your terminal:
