@@ -7,6 +7,17 @@ Type this in your terminal:
 "npm install -g expo-cli"
 Type : "expo --version" To make sure expo is installed correctly
 
+If not installed or required elevated persmission:
+    For Windows: 
+       - open powershell as administrator
+       - then run 'npm install -g expo-cli'
+    For Mac:
+        -   run 'sudo npm install -g expo-cli'
+
+Then run 'npm install' to install all the dependencies
+
+Now type in "npm start" in your terminal to scan the QR code
+
 
 ## Run Back-End
 
