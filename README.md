@@ -102,7 +102,7 @@ npm start
    ```
 3. Push your changes to the new branch:
    ```bash
-   git push origin feature/(feature-name)
+   git push -u origin feature/(feature-name)
    ```
 
 ### Start a Pull Request
