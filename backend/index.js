@@ -4,6 +4,8 @@ import connectDB from "./services/mongodb.js";
 import userRoutes from "./routes/admin/User/userRoute.js";
 import debtRoutes from "./routes/debt/debtRoute.js";
 import expenseRoutes from "./routes/expense/expenseRoute.js";
+import ocrRoutes from './routes/ocrRoute.js';
+
 
 const app = express();
 dotenv.config();
@@ -15,6 +17,8 @@ app.use(express.urlencoded({ extended: true }));
 app.use('/user', userRoutes);
 app.use('/debt', debtRoutes);
 app.use('/expense', expenseRoutes);
+
+app.use('/ocr', ocrRoutes);
 
 const PORT = process.env.PORT || 4001;
 app.listen(PORT, () => {
