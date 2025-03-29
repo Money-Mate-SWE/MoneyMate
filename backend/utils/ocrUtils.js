@@ -28,6 +28,7 @@ export const parseOcrText = (ocrText) => {
         items: [],
     };
 
+    // Extract store name (first line)
     parsedData.storeName = lines[0];
 
     // Extract total amount (Find the line containing 'TOTAL' and get the next line for the amount)
@@ -43,26 +44,26 @@ export const parseOcrText = (ocrText) => {
         }
     }
 
-    // Extract items with price possibly on the next line
+    // Extract items with price possibly between N or Y
     for (let i = 0; i < lines.length; i++) {
         const line = lines[i];
 
         // Skip lines that contain store info, addresses, or non-item content (like "ヨ", "N", "Y")
-        if (line.includes("TOLEDO") || line.match(/#\d+/) || line.match(/\d{5}/) || /^[ヨYN]+$/.test(line)) {
+        if (line.includes("TOLEDO") || line.match(/#\d+/) || line.match(/\d{5}/) || /^[ヨ]+$/.test(line)) {
             continue;
         }
 
-        // Match format: "Product Code (Optional) ITEM NAME PRICE"
-        const itemMatch = line.match(/^(?:\d+\s+)?(.+?)\s+([\d.]+)\s*[YN]?$/);
+        // Match format: "ITEM NAME PRICE N" or "ITEM NAME PRICE Y"
+        const itemMatch = line.match(/^(.+?)\s+([\d.]+)\s*[NY]$/);
 
         if (itemMatch) {
-            // Case where price is on the same line
+            // Case where item name and price are on the same line
             const itemName = itemMatch[1].trim();
             const itemAmount = parseFloat(itemMatch[2]);
             parsedData.items.push({ itemName, amount: itemAmount });
         } else {
-            // Handle case where price is on the next line
-            const nextLineMatch = lines[i + 1]?.match(/^([\d.]+)\s*[YN]?$/);
+            // Handle case where price is on the next line and ends with N or Y
+            const nextLineMatch = lines[i + 1]?.match(/^([\d.]+)\s*[NY]$/);
             if (nextLineMatch) {
                 const itemName = line.trim();
                 const itemAmount = parseFloat(nextLineMatch[1]);
@@ -80,6 +81,5 @@ export const parseOcrText = (ocrText) => {
             parsedData.items.push({ itemName: 'Tax', amount: parseFloat(taxAmountMatch[0]) });
         }
     }
-
     return parsedData;
 };
