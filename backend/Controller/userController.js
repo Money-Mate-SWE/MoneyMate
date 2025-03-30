@@ -29,6 +29,13 @@ const createUser = async (req, res) => {
     }
 
     try {
+        const auth0User = await UserService.findUserInAuth0ByUsername(username);
+        if (auth0User) {
+            return res.status(409).json({
+                message: "Username already exists!",
+            });
+        }
+
         if (await UserService.findUserByUserName(username) || await UserService.findUserByEmail(email)) {
             return res.status(409).json({
                 message: "Username or email you entered already exists!"
