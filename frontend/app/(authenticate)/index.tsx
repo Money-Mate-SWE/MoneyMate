@@ -7,6 +7,9 @@ import {
   Platform,
 } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
+import { Dimensions } from "react-native";
+
+const { width, height } = Dimensions.get("window");
 
 import { Collapsible } from "@/components/Collapsible";
 import { ExternalLink } from "@/components/ExternalLink";
@@ -34,7 +37,7 @@ const LoginButton = () => {
       style={[styles.loginButton, styles.buttonShadowBox]}
       onPress={onPress}
     >
-      <ThemedText style={[styles.login]}>Login</ThemedText>
+      <ThemedText style={[styles.login]}>Login Using Auth0</ThemedText>
     </Pressable>
   );
 };
@@ -49,13 +52,13 @@ export default function Authenticate() {
         start={{ x: 0.5, y: 0 }}
         end={{ x: 0.5, y: 1 }}
       />
-      {LoginButton()}
-      <View style={[styles.signupButton, styles.buttonShadowBox]}>
-        <ThemedText style={[styles.signUp]}>Sign Up</ThemedText>
-      </View>
       <ThemedText style={[styles.moneyMate]}>MONEY MATE</ThemedText>
-
+      <Image
+        source={require("@/assets/images/react-logo.png")}
+        style={styles.image}
+      />
       <ThemedText style={[styles.welcomeBack]}>Welcome Back</ThemedText>
+      {LoginButton()}
     </View>
   );
 }
@@ -77,60 +80,46 @@ const styles = StyleSheet.create({
     shadowColor: "rgba(0, 0, 0, 0.25)",
     position: "absolute",
   },
+  image: {
+    top: "15%",
+    width: 300, // Set the width of the image
+    height: 300, // Set the height of the image
+    resizeMode: "contain", // Ensure the image scales properly
+    alignSelf: "center", // Center the image horizontally
+    marginTop: 50, // Add some spacing from the top
+  },
 
   image1: {
-    top: -1,
-    left: -1,
+    top: 0,
+    left: 0,
     borderTopLeftRadius: 214,
     borderTopRightRadius: 3,
     borderBottomRightRadius: 214,
     borderStyle: "solid",
     borderColor: "rgba(0, 0, 0, 0)",
     borderWidth: 1,
-    width: 430,
-    height: 958,
+    width: width,
+    height: height,
     backgroundColor: "transparent",
-    shadowOpacity: 1,
-    elevation: 4,
-    shadowRadius: 4,
-    shadowOffset: {
-      width: 0,
-      height: 4,
-    },
-    shadowColor: "rgba(0, 0, 0, 0.25)",
     position: "absolute",
   },
 
   login: {
     color: "rgba(0, 0, 0, 0.65)",
-    fontSize: 30,
+    fontSize: 20,
     lineHeight: 40,
   },
   loginButton: {
-    top: 530,
+    top: "70%",
     height: 50,
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
     flexDirection: "column",
   },
-  signUp: {
-    height: "70%",
-    color: "rgba(0, 0, 0, 0.66)",
-    fontSize: 30,
-    textAlign: "left",
-    lineHeight: 40,
-  },
-  signupButton: {
-    top: 622,
-    height: 50,
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    flexDirection: "column",
-  },
+
   moneyMate: {
-    top: 43,
+    top: "10%",
     left: 233,
     color: "#fff",
     width: 191,
@@ -139,17 +128,14 @@ const styles = StyleSheet.create({
   },
 
   welcomeBack: {
-    top: 430,
+    top: "20%",
+    alignSelf: "center",
     letterSpacing: -0.5,
-    lineHeight: 29,
     fontWeight: "600",
     fontFamily: "Inter-SemiBold",
     color: "#f9f7f7",
     textAlign: "center",
-    display: "flex",
     alignItems: "center",
-    justifyContent: "center",
-    height: 79,
     fontSize: 24,
   },
   authentication: {
@@ -158,5 +144,6 @@ const styles = StyleSheet.create({
     height: 956,
     overflow: "hidden",
     width: "100%",
+    flexDirection: "column",
   },
 });
