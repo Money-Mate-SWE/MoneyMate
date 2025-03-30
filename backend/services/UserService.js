@@ -1,5 +1,4 @@
 import User from "../model/User.js";
-import auth0 from "../utils/authUtils.js";
 
 class UserService {
     static async createUser(userData) {
