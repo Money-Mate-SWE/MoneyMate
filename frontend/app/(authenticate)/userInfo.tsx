@@ -1,11 +1,5 @@
-import {
-  View,
-  Pressable,
-  StyleSheet,
-  Button,
-  Image,
-  Platform,
-} from "react-native";
+import { useState } from "react";
+import { View, Pressable, StyleSheet, TextInput } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import { Dimensions } from "react-native";
 
@@ -17,21 +11,12 @@ import ParallaxScrollView from "@/components/ParallaxScrollView";
 import { ThemedText } from "@/components/ThemedText";
 import { ThemedView } from "@/components/ThemedView";
 import { IconSymbol } from "@/components/ui/IconSymbol";
-import { useAuth0, Auth0Provider } from "react-native-auth0";
 import { router } from "expo-router";
 
-const LoginButton = () => {
-  const { authorize } = useAuth0();
-
+const Home = () => {
   const onPress = async () => {
     try {
-      const result = await authorize();
-      if (result) {
-        console.log(result);
-        router.push("/(authenticate)/userInfo");
-      } else {
-        console.log("Login canceled or failed:", result);
-      }
+      router.push("/(tabs)");
     } catch (e) {
       console.log(e);
     }
@@ -39,17 +24,20 @@ const LoginButton = () => {
 
   return (
     <Pressable
-      style={[styles.loginButton, styles.buttonShadowBox]}
+      style={[styles.HomeButton, styles.buttonShadowBox]}
       onPress={onPress}
     >
-      <ThemedText style={[styles.login]}>Login Using Auth0</ThemedText>
+      <ThemedText style={[styles.submit]}>Submit</ThemedText>
     </Pressable>
   );
 };
 
 export default function Authenticate() {
+  const [Firstname, setFirstName] = useState("");
+  const [Lastname, setLastName] = useState("");
+
   return (
-    <View style={styles.authentication}>
+    <View style={styles.nameForm}>
       <LinearGradient
         style={styles.image1}
         locations={[0.28, 0.54, 0.82]}
@@ -58,17 +46,57 @@ export default function Authenticate() {
         end={{ x: 0.5, y: 1 }}
       />
       <ThemedText style={[styles.moneyMate]}>MONEY MATE</ThemedText>
-      <Image
-        source={require("@/assets/images/react-logo.png")}
-        style={styles.image}
-      />
-      <ThemedText style={[styles.welcomeBack]}>Welcome Back</ThemedText>
-      {LoginButton()}
+
+      <ThemedText style={[styles.formtitle]}>
+        Please enter your information
+      </ThemedText>
+      <ThemedView style={styles.form}>
+        <ThemedText style={styles.fieldTitle}> First Name</ThemedText>
+        <TextInput
+          style={styles.textInput}
+          placeholder="Enter your first name"
+          value={Firstname}
+          onChangeText={(text) => setFirstName(text)}
+        />
+        <ThemedText style={styles.fieldTitle}> Last Name</ThemedText>
+        <TextInput
+          style={styles.textInput}
+          placeholder="Enter your Last name"
+          value={Lastname}
+          onChangeText={(text) => setLastName(text)}
+        />
+      </ThemedView>
+      {Home()}
     </View>
   );
 }
 
 const styles = StyleSheet.create({
+  fieldTitle: {
+    left: "10%",
+  },
+  form: {
+    top: "30%",
+    alignSelf: "center",
+    width: "80%",
+    height: 250,
+    backgroundColor: "#F6FDFF",
+    flexDirection: "column",
+    justifyContent: "center",
+  },
+  textInput: {
+    height: 40,
+    borderColor: "#ccc",
+    borderWidth: 1,
+    borderRadius: 8,
+    paddingHorizontal: 10,
+    marginTop: 10,
+    marginBottom: 20,
+    alignSelf: "center",
+    width: "80%",
+    backgroundColor: "#fff",
+    color: "rgba(0, 0, 0, 0.65)",
+  },
   buttonShadowBox: {
     width: 250,
     backgroundColor: "#fff",
@@ -84,14 +112,6 @@ const styles = StyleSheet.create({
     },
     shadowColor: "rgba(0, 0, 0, 0.25)",
     position: "absolute",
-  },
-  image: {
-    top: "15%",
-    width: 300, // Set the width of the image
-    height: 300, // Set the height of the image
-    resizeMode: "contain", // Ensure the image scales properly
-    alignSelf: "center", // Center the image horizontally
-    marginTop: 50, // Add some spacing from the top
   },
 
   image1: {
@@ -109,12 +129,12 @@ const styles = StyleSheet.create({
     position: "absolute",
   },
 
-  login: {
+  submit: {
     color: "rgba(0, 0, 0, 0.65)",
     fontSize: 20,
     lineHeight: 40,
   },
-  loginButton: {
+  HomeButton: {
     top: "70%",
     height: 50,
     flex: 1,
@@ -132,18 +152,18 @@ const styles = StyleSheet.create({
     fontSize: 24,
   },
 
-  welcomeBack: {
-    top: "20%",
+  formtitle: {
+    top: "27%",
     alignSelf: "center",
     letterSpacing: -0.5,
     fontWeight: "600",
     fontFamily: "Inter-SemiBold",
-    color: "#f9f7f7",
+    color: "rgba(0, 0, 0, 0.65)",
     textAlign: "center",
     alignItems: "center",
     fontSize: 24,
   },
-  authentication: {
+  nameForm: {
     backgroundColor: "#f7fffd",
     flex: 1,
     height: 956,

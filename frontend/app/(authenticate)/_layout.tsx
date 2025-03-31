@@ -12,38 +12,26 @@ import "react-native-reanimated";
 import { Auth0Provider } from "react-native-auth0";
 
 import { useColorScheme } from "@/hooks/useColorScheme";
+import { Header } from "react-native/Libraries/NewAppScreen";
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
 
-export default function RootLayout() {
+export default function AuthenticateLayout() {
   const colorScheme = useColorScheme();
-  const [loaded] = useFonts({
-    SpaceMono: require("../assets/fonts/SpaceMono-Regular.ttf"),
-  });
-
-  useEffect(() => {
-    if (loaded) {
-      SplashScreen.hideAsync();
-    }
-  }, [loaded]);
-
-  if (!loaded) {
-    return null;
-  }
 
   return (
     <ThemeProvider value={colorScheme === "light" ? DarkTheme : DefaultTheme}>
-      <Auth0Provider
-        domain={"dev-2sc4okx2cibmjc8r.us.auth0.com"}
-        clientId={"hGBeSUXoT4x1C4yyro3PUJXIHJVcO6FU"}
-      >
-        <Stack screenOptions={{ headerShown: false }}>
-          <Stack.Screen name="(authenticate)/index" />
-          <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-          <Stack.Screen name="+not-found" />
-        </Stack>
-      </Auth0Provider>
+      <Stack screenOptions={{ headerShown: false }}>
+        <Stack.Screen
+          name="(authenticate)/index"
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="(authenticate)/userInfo"
+          options={{ headerShown: false }}
+        />
+      </Stack>
       <StatusBar style="auto" />
     </ThemeProvider>
   );
