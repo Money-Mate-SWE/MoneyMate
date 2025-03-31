@@ -3,41 +3,48 @@
 # How to Run this locally in the machine
 
 ## Run Front-End
+
 Type this in your terminal:
+
 ```bash
 npm install -g expo-cli
 ```
+
 Type : "expo --version" To make sure expo is installed correctly
 
 If not installed or required elevated persmission:
-    For Windows: 
-       - open powershell as administrator
-       - then run 
-       ```bash
+For Windows: - open powershell as administrator - then run
+`bash
         npm install -g expo-cli
-        ```
-    For Mac:
-        -   run 
-        ```bash
+        `
+For Mac: - run
+`bash
             sudo npm install -g expo-cli
-        ```
+        `
 
-Go to frontend folder: 
+Go to frontend folder:
+
 ```bash
 cd frontend
 ```
 
 Then run 'npm install' to install all the dependencies
+
 ```bash
 npm install
 ```
 
-Now type in "npm start" in your terminal to scan the QR code
-
 ```bash
-npm start
+npx expo prebuild
 ```
 
+Now type in "npm run ios" in your terminal to open iOS simulator
+
+```bash
+npm run ios
+```
+
+Note: Expo Go mobile app will not since we are in bare workflow and not in expo managed workflow
 
 ## Run Back-End
 
