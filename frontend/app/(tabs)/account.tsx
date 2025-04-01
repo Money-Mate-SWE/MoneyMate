@@ -5,6 +5,7 @@ import {
   Pressable,
   TextInput,
 } from "react-native";
+import { useEffect, useState } from "react";
 
 import { Collapsible } from "@/components/Collapsible";
 import { ExternalLink } from "@/components/ExternalLink";
@@ -12,16 +13,109 @@ import ParallaxScrollView from "@/components/ParallaxScrollView";
 import { ThemedText } from "@/components/ThemedText";
 import { ThemedView } from "@/components/ThemedView";
 import { IconSymbol } from "@/components/ui/IconSymbol";
-import { useAuth0, Auth0Provider } from "react-native-auth0";
+import { useAuth0 } from "react-native-auth0";
+import { GetUser } from "@/api/apiService";
+import { UserInfo } from "@/api/apiInterface";
 import { router } from "expo-router";
 import { LinearGradient } from "expo-linear-gradient";
 
 import { StyleVariable } from "@/constants/GlobalStyles";
 
-const LogoutButton = () => {
+const checkUserExists = async (email: string) => {
+  try {
+    const userProfile = await GetUser(email);
+    return userProfile;
+  } catch (error: any) {
+    if (error.response && error.response.status === 404) {
+      return null;
+    }
+    console.error("Error checking user existence:", error);
+    throw error;
+  }
+};
+
+// const LogoutButton = () => {
+//   const { clearSession } = useAuth0();
+
+//   const onPress = async () => {
+//     try {
+//       await clearSession();
+//       console.log("User logged out successfully");
+//       router.push("/(authenticate)");
+//     } catch (e) {
+//       console.log(e);
+//     }
+//   };
+
+//   return (
+//     <ThemedView>
+//       <Pressable
+//         style={[styles.Button, styles.buttonShadowBox, styles.signout]}
+//         onPress={onPress}
+//       >
+//         <ThemedText style={[styles.buttonText]}>Sign out</ThemedText>
+//       </Pressable>
+//     </ThemedView>
+//   );
+// };
+
+// const UpdateButton = () => {
+//   const onPress = async () => {
+//     try {
+//     } catch (e) {
+//       console.log(e);
+//     }
+//   };
+
+//   return (
+//     <ThemedView>
+//       <Pressable
+//         style={[styles.buttonShadowBox, styles.Button]}
+//         onPress={onPress}
+//       >
+//         <ThemedText style={[styles.buttonText]}>Update Profile</ThemedText>
+//       </Pressable>
+//     </ThemedView>
+//   );
+// };
+
+export default function account() {
+  const { user } = useAuth0();
+  const [Firstname, setFirstName] = useState("");
+  const [Lastname, setLastName] = useState("");
+  const [userName, setUsername] = useState("");
+  const [email, setEmail] = useState("");
+
+  const [buttonText, setButtonText] = useState("Update");
+
   const { clearSession } = useAuth0();
 
-  const onPress = async () => {
+  useEffect(() => {
+    if (user) {
+      const email = user.email ?? "";
+      checkUserExists(email)
+        .then((userProfile) => {
+          setFirstName(userProfile.firstname);
+          setLastName(userProfile.lastname);
+          setUsername(userProfile.username);
+          setEmail(userProfile.email);
+        })
+        .catch((error) => {
+          console.error("Error checking user existence:", error);
+        });
+    }
+  }, [user]);
+
+  const onPressUpdate = async () => {
+    try {
+      setButtonText((prevText) =>
+        prevText === "Submit" ? "Update" : "Submit"
+      );
+    } catch (e) {
+      console.log(e);
+    }
+  };
+  const onPressLogout = async () => {
     try {
       await clearSession();
       console.log("User logged out successfully");
@@ -31,39 +125,6 @@ const LogoutButton = () => {
     }
   };
 
-  return (
-    <ThemedView>
-      <Pressable
-        style={[styles.Button, styles.buttonShadowBox, styles.signout]}
-        onPress={onPress}
-      >
-        <ThemedText style={[styles.buttonText]}>Sign out</ThemedText>
-      </Pressable>
-    </ThemedView>
-  );
-};
-
-const UpdateButton = () => {
-  const onPress = async () => {
-    try {
-    } catch (e) {
-      console.log(e);
-    }
-  };
-
-  return (
-    <ThemedView>
-      <Pressable
-        style={[styles.buttonShadowBox, styles.Button]}
-        onPress={onPress}
-      >
-        <ThemedText style={[styles.buttonText]}>Update Profile</ThemedText>
-      </Pressable>
-    </ThemedView>
-  );
-};
-
-export default function account() {
   return (
     <ParallaxScrollView
       headerBackgroundColor={{ light: "#D0D0D0", dark: "#353636" }}
@@ -84,8 +145,9 @@ export default function account() {
         <TextInput
           style={styles.textInput}
           value="Username"
-          editable={false}
-          selectTextOnFocus={false}
+          editable={buttonText === "Submit"}
+          selectTextOnFocus={buttonText === "Submit"}
+          onChangeText={(text) => setUsername(text)}
         />
       </ThemedView>
       <ThemedView>
@@ -93,8 +155,9 @@ export default function account() {
         <TextInput
           style={styles.textInput}
           value="First Name"
-          editable={false}
-          selectTextOnFocus={false}
+          editable={buttonText === "Submit"}
+          selectTextOnFocus={buttonText === "Submit"}
+          onChangeText={(text) => setFirstName(text)}
         />
       </ThemedView>
       <ThemedView>
@@ -102,8 +165,9 @@ export default function account() {
         <TextInput
           style={styles.textInput}
           value="Last Name"
-          editable={false}
-          selectTextOnFocus={false}
+          editable={buttonText === "Submit"}
+          selectTextOnFocus={buttonText === "Submit"}
+          onChangeText={(text) => setLastName(text)}
         />
       </ThemedView>
       <ThemedView>
@@ -111,12 +175,27 @@ export default function account() {
         <TextInput
           style={styles.textInput}
           value="email.address@email.com"
-          editable={false}
-          selectTextOnFocus={false}
+          editable={buttonText === "Submit"}
+          selectTextOnFocus={buttonText === "Submit"}
+          onChangeText={(text) => setEmail(text)}
         />
       </ThemedView>
-      <ThemedView>{UpdateButton()}</ThemedView>
-      <ThemedView>{LogoutButton()}</ThemedView>
+      <ThemedView>
+        <Pressable
+          style={[styles.buttonShadowBox, styles.Button]}
+          onPress={onPressUpdate}
+        >
+          <ThemedText style={[styles.buttonText]}>Update Profile</ThemedText>
+        </Pressable>
+      </ThemedView>
+      <ThemedView>
+        <Pressable
+          style={[styles.Button, styles.buttonShadowBox, styles.signout]}
+          onPress={onPressLogout}
+        >
+          <ThemedText style={[styles.buttonText]}>Sign out</ThemedText>
+        </Pressable>
+      </ThemedView>
       <ThemedView>
         <ThemedText style={styles.warning}>
           *Note: Signing out will redirect you to use safari.

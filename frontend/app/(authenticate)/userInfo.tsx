@@ -13,11 +13,12 @@ import { IconSymbol } from "@/components/ui/IconSymbol";
 import { router } from "expo-router";
 import { GetUser, CreateUser } from "@/api/apiService";
 import { useAuth0 } from "react-native-auth0";
+import { UserInfo } from "@/api/apiInterface";
 
-const checkUserExists = async (username: string) => {
+const checkUserExists = async (email: string) => {
   try {
-    const user = await GetUser(username);
-    return user;
+    const userProfile = await GetUser(email);
+    return userProfile;
   } catch (error: any) {
     if (error.response && error.response.status === 404) {
       return null;
@@ -31,17 +32,20 @@ export default function Authenticate() {
   const { user } = useAuth0();
   const [Firstname, setFirstName] = useState("");
   const [Lastname, setLastName] = useState("");
+  const [userName, setUsername] = useState("");
+
   const [userExists, setUserExists] = useState(false);
   const [buttonText, setButtonText] = useState("Submit");
 
   useEffect(() => {
     if (user) {
-      const username = user.nickname ?? "";
-      checkUserExists(username)
-        .then((user) => {
-          if (user) {
-            setFirstName(user.firstName);
-            setLastName(user.lastName);
+      const email = user.email ?? "";
+      checkUserExists(email)
+        .then((userProfile) => {
+          if (userProfile) {
+            setFirstName(userProfile.firstname);
+            setLastName(userProfile.lastname);
+            setUsername(userProfile.username);
             setUserExists(true);
             setButtonText("Continue");
           } else {
@@ -57,6 +61,29 @@ export default function Authenticate() {
 
   const onPress = async () => {
     try {
+      if (buttonText === "Submit") {
+        if (
+          !userName.trim().toLowerCase() ||
+          !Firstname.trim() ||
+          !Lastname.trim()
+        ) {
+          alert("Please enter all the information.");
+          return;
+        }
+        console.log(user);
+        if (!user) {
+          alert("User is not authenticated.");
+          return;
+        }
+        const newUser: UserInfo = {
+          username: userName,
+          email: user?.email ?? "",
+          firstname: Firstname,
+          lastname: Lastname,
+        };
+        await CreateUser(newUser);
+        console.log("User created successfully!");
+      }
       router.replace("/(tabs)");
     } catch (e) {
       console.log(e);
@@ -78,13 +105,22 @@ export default function Authenticate() {
         Please check or update your information
       </ThemedText>
       <ThemedView style={styles.form}>
+        <ThemedText style={styles.fieldTitle}> Username</ThemedText>
+        <TextInput
+          style={styles.textInput}
+          placeholder="Enter your username"
+          value={userName}
+          editable={buttonText === "Submit"}
+          selectTextOnFocus={buttonText === "Submit"}
+          onChangeText={(text) => setUsername(text)}
+        />
         <ThemedText style={styles.fieldTitle}> First Name</ThemedText>
         <TextInput
           style={styles.textInput}
           placeholder="Enter your first name"
           value={Firstname}
-          editable={false}
-          selectTextOnFocus={false}
+          editable={buttonText === "Submit"}
+          selectTextOnFocus={buttonText === "Submit"}
           onChangeText={(text) => setFirstName(text)}
         />
         <ThemedText style={styles.fieldTitle}> Last Name</ThemedText>
@@ -115,7 +151,7 @@ const styles = StyleSheet.create({
     top: "30%",
     alignSelf: "center",
     width: "80%",
-    height: 250,
+    height: 350,
     backgroundColor: "#F6FDFF",
     flexDirection: "column",
     justifyContent: "center",
@@ -171,7 +207,7 @@ const styles = StyleSheet.create({
     lineHeight: 40,
   },
   HomeButton: {
-    top: "70%",
+    top: "80%",
     height: 50,
     flex: 1,
     justifyContent: "center",
@@ -197,7 +233,7 @@ const styles = StyleSheet.create({
     color: "rgba(0, 0, 0, 0.65)",
     textAlign: "center",
     alignItems: "center",
-    fontSize: 24,
+    fontSize: 20,
   },
   nameForm: {
     backgroundColor: "#f7fffd",

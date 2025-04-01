@@ -1,11 +1,12 @@
 import api from "./api";
+import { UserInfo } from "@/api/apiInterface";
 
 //User api
 
 //create user info
-export const CreateUser = async (username: string, userInfo: JSON) => {
+export const CreateUser = async (userInfo: UserInfo) => {
   try {
-    const response = await api.put(`/user/newUser`, userInfo);
+    const response = await api.post(`/user/newUser`, userInfo);
     return response.data;
   } catch (error) {
     console.error("Error updating user info:", error);
@@ -14,9 +15,9 @@ export const CreateUser = async (username: string, userInfo: JSON) => {
 };
 
 //get user
-export const GetUser = async (username: string) => {
+export const GetUser = async (email: string) => {
   try {
-    const response = await api.get(`/user/getUserByUsername/${username}`);
+    const response = await api.get(`/user/getUserByEmail/${email}`);
     return response.data;
   } catch (error) {
     console.error("Error getting user info:", error);
