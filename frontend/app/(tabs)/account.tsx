@@ -14,7 +14,7 @@ import { ThemedText } from "@/components/ThemedText";
 import { ThemedView } from "@/components/ThemedView";
 import { IconSymbol } from "@/components/ui/IconSymbol";
 import { useAuth0 } from "react-native-auth0";
-import { GetUser } from "@/api/apiService";
+import { GetUser,UpdateUser } from "@/api/apiService";
 import { UserInfo } from "@/api/apiInterface";
 import { router } from "expo-router";
 import { LinearGradient } from "expo-linear-gradient";
@@ -85,7 +85,7 @@ export default function account() {
   const [Lastname, setLastName] = useState("");
   const [userName, setUsername] = useState("");
   const [email, setEmail] = useState("");
-
+  const [id, setId] = useState(""); // State to store the user ID
   const [buttonText, setButtonText] = useState("Update");
 
   const { clearSession } = useAuth0();
@@ -96,6 +96,7 @@ export default function account() {
       checkUserExists(Email)
         .then((userProfile) => {
           if (userProfile){
+            setId(userProfile._id); // Set the user ID
             setFirstName(userProfile.firstname);
             setLastName(userProfile.lastname);
             setUsername(userProfile.username);
@@ -111,6 +112,24 @@ export default function account() {
 
   const onPressUpdate = async () => {
     try {
+      if(buttonText === "Submit"){
+        if (
+          !userName.trim().toLowerCase() ||
+          !Firstname.trim() ||
+          !Lastname.trim()
+        ) {
+          alert("Please enter all the information.");
+          return;
+        }
+        else{
+          await UpdateUser(id, {
+            username: userName,
+            email: user?.email ?? "",
+            firstname: Firstname,
+            lastname: Lastname,})
+        }
+
+      }
       setButtonText((prevText) =>
         prevText === "Submit" ? "Update" : "Submit"
       );
@@ -120,7 +139,9 @@ export default function account() {
   };
   const onPressLogout = async () => {
     try {
+
       await clearSession();
+
       console.log("User logged out successfully");
       router.push("/(authenticate)");
     } catch (e) {

@@ -153,15 +153,18 @@ const updateUser = async (req, res) => {
         });
     }
 
-    if (!username && !email) {
-        return res.status(400).json({
-            message: "Please enter username or email to update!"
-        });
-    }
 
     const updateData = {};
     if (req.body.username) updateData.username = req.body.username.trim();
     if (req.body.email) updateData.email = req.body.email.trim();
+    if (req.body.firstname) updateData.firstname = req.body.firstname.trim();
+    if (req.body.lastname) updateData.lastname = req.body.lastname.trim();
+
+    if (!updateData.firstname && !updateData.lastname) {
+        return res.status(400).json({
+            message: "Please enter firstname or lastname to update!"
+        });
+    }
 
     try {
         await UserService.updateUser(userId, updateData);

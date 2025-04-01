@@ -25,3 +25,14 @@ export const GetUser = async (email: string) => {
   }
 };
 
+//update user
+export const UpdateUser = async (userId: string, userInfo: UserInfo) => {
+  try {
+    const response = await api.put(`/user/updateUser/${userId}`, userInfo);
+    return response.data;
+  } catch (error) {
+    console.error("Error updating user info:", error);
+    throw error;
+  }
+};
+
