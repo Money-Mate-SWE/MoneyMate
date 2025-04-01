@@ -1,8 +1,7 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { View, Pressable, StyleSheet, TextInput } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import { Dimensions } from "react-native";
-
 const { width, height } = Dimensions.get("window");
 
 import { Collapsible } from "@/components/Collapsible";
@@ -12,8 +11,50 @@ import { ThemedText } from "@/components/ThemedText";
 import { ThemedView } from "@/components/ThemedView";
 import { IconSymbol } from "@/components/ui/IconSymbol";
 import { router } from "expo-router";
+import { GetUser, CreateUser } from "@/api/apiService";
+import { useAuth0 } from "react-native-auth0";
 
-const Home = () => {
+const checkUserExists = async (username: string) => {
+  try {
+    const user = await GetUser(username);
+    return user;
+  } catch (error: any) {
+    if (error.response && error.response.status === 404) {
+      return null;
+    }
+    console.error("Error checking user existence:", error);
+    throw error;
+  }
+};
+
+export default function Authenticate() {
+  const { user } = useAuth0();
+  const [Firstname, setFirstName] = useState("");
+  const [Lastname, setLastName] = useState("");
+  const [userExists, setUserExists] = useState(false);
+  const [buttonText, setButtonText] = useState("Submit");
+
+  useEffect(() => {
+    if (user) {
+      const username = user.nickname ?? "";
+      checkUserExists(username)
+        .then((user) => {
+          if (user) {
+            setFirstName(user.firstName);
+            setLastName(user.lastName);
+            setUserExists(true);
+            setButtonText("Continue");
+          } else {
+            setUserExists(false);
+            setButtonText("Submit");
+          }
+        })
+        .catch((error) => {
+          console.error("Error checking user existence:", error);
+        });
+    }
+  }, [user]);
+
   const onPress = async () => {
     try {
       router.replace("/(tabs)");
@@ -21,20 +62,6 @@ const Home = () => {
       console.log(e);
     }
   };
-
-  return (
-    <Pressable
-      style={[styles.HomeButton, styles.buttonShadowBox]}
-      onPress={onPress}
-    >
-      <ThemedText style={[styles.submit]}>Submit</ThemedText>
-    </Pressable>
-  );
-};
-
-export default function Authenticate() {
-  const [Firstname, setFirstName] = useState("");
-  const [Lastname, setLastName] = useState("");
 
   return (
     <View style={styles.nameForm}>
@@ -48,7 +75,7 @@ export default function Authenticate() {
       <ThemedText style={[styles.moneyMate]}>MONEY MATE</ThemedText>
 
       <ThemedText style={[styles.formtitle]}>
-        Please enter your information
+        Please check or update your information
       </ThemedText>
       <ThemedView style={styles.form}>
         <ThemedText style={styles.fieldTitle}> First Name</ThemedText>
@@ -56,6 +83,8 @@ export default function Authenticate() {
           style={styles.textInput}
           placeholder="Enter your first name"
           value={Firstname}
+          editable={false}
+          selectTextOnFocus={false}
           onChangeText={(text) => setFirstName(text)}
         />
         <ThemedText style={styles.fieldTitle}> Last Name</ThemedText>
@@ -63,10 +92,17 @@ export default function Authenticate() {
           style={styles.textInput}
           placeholder="Enter your Last name"
           value={Lastname}
+          editable={buttonText === "Submit"}
+          selectTextOnFocus={buttonText === "Submit"}
           onChangeText={(text) => setLastName(text)}
         />
       </ThemedView>
-      {Home()}
+      <Pressable
+        style={[styles.HomeButton, styles.buttonShadowBox]}
+        onPress={onPress}
+      >
+        <ThemedText style={[styles.submit]}>{buttonText}</ThemedText>
+      </Pressable>
     </View>
   );
 }

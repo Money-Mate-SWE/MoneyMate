@@ -10,6 +10,8 @@ const isValidEmail = (email) => {
 const createUser = async (req, res) => {
     const username = req.body.username.trim();
     const email = req.body.email.trim().toLowerCase();
+    const firstname = req.body.firstname.trim();
+    const lastname = req.body.lastname.trim();
 
     if (!username || username.length < 3) {
         return res.status(400).json({
@@ -41,12 +43,14 @@ const createUser = async (req, res) => {
             // return res.redirect("/admin/user");
         }
 
-        await UserService.createUser({ username, email });
+        await UserService.createUser({ username, email, firstname, lastname });
 
         return res.status(201).json({
             message: "User created",
             username,
-            email
+            email,
+            firstname,
+            lastname
         });
         // req.session.messages.push({
         //     type: "success",
