@@ -92,13 +92,16 @@ export default function account() {
 
   useEffect(() => {
     if (user) {
-      const email = user.email ?? "";
-      checkUserExists(email)
+      const Email = user.email ?? "";
+      checkUserExists(Email)
         .then((userProfile) => {
-          setFirstName(userProfile.firstname);
-          setLastName(userProfile.lastname);
-          setUsername(userProfile.username);
-          setEmail(userProfile.email);
+          if (userProfile){
+            setFirstName(userProfile.firstname);
+            setLastName(userProfile.lastname);
+            setUsername(userProfile.username);
+            setEmail(userProfile.email);
+          }
+          
         })
         .catch((error) => {
           console.error("Error checking user existence:", error);
@@ -144,7 +147,7 @@ export default function account() {
         <ThemedText>Username</ThemedText>
         <TextInput
           style={styles.textInput}
-          value="Username"
+          value={userName}
           editable={buttonText === "Submit"}
           selectTextOnFocus={buttonText === "Submit"}
           onChangeText={(text) => setUsername(text)}
@@ -154,7 +157,7 @@ export default function account() {
         <ThemedText>First Name</ThemedText>
         <TextInput
           style={styles.textInput}
-          value="First Name"
+          value={Firstname}
           editable={buttonText === "Submit"}
           selectTextOnFocus={buttonText === "Submit"}
           onChangeText={(text) => setFirstName(text)}
@@ -164,7 +167,7 @@ export default function account() {
         <ThemedText>Last Name</ThemedText>
         <TextInput
           style={styles.textInput}
-          value="Last Name"
+          value={Lastname}
           editable={buttonText === "Submit"}
           selectTextOnFocus={buttonText === "Submit"}
           onChangeText={(text) => setLastName(text)}
@@ -174,10 +177,9 @@ export default function account() {
         <ThemedText>Email</ThemedText>
         <TextInput
           style={styles.textInput}
-          value="email.address@email.com"
-          editable={buttonText === "Submit"}
-          selectTextOnFocus={buttonText === "Submit"}
-          onChangeText={(text) => setEmail(text)}
+          value={email}
+          editable={false}
+          selectTextOnFocus={false}
         />
       </ThemedView>
       <ThemedView>
@@ -185,7 +187,7 @@ export default function account() {
           style={[styles.buttonShadowBox, styles.Button]}
           onPress={onPressUpdate}
         >
-          <ThemedText style={[styles.buttonText]}>Update Profile</ThemedText>
+          <ThemedText style={[styles.buttonText]}>{buttonText}</ThemedText>
         </Pressable>
       </ThemedView>
       <ThemedView>
