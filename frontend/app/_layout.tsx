@@ -39,7 +39,7 @@ export default function RootLayout() {
         clientId={"hGBeSUXoT4x1C4yyro3PUJXIHJVcO6FU"}
       >
         <Stack screenOptions={{ headerShown: false }}>
-          <Stack.Screen name="(authenticate)/index" />
+          <Stack.Screen name="(authenticate)" />
           <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
           <Stack.Screen name="+not-found" />
         </Stack>

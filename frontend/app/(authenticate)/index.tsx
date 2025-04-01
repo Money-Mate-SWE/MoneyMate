@@ -18,7 +18,8 @@ import { ThemedText } from "@/components/ThemedText";
 import { ThemedView } from "@/components/ThemedView";
 import { IconSymbol } from "@/components/ui/IconSymbol";
 import { useAuth0, Auth0Provider } from "react-native-auth0";
-import { router } from "expo-router";
+import { router, useRouter } from "expo-router";
+import { useEffect } from "react";
 
 const LoginButton = () => {
   const { authorize } = useAuth0();
@@ -48,6 +49,15 @@ const LoginButton = () => {
 };
 
 export default function Authenticate() {
+  const { user } = useAuth0();
+  const router = useRouter();
+
+  useEffect(() => {
+    if (user) {
+      router.replace("/(authenticate)/userInfo");
+    }
+  }, [user]);
+
   return (
     <ThemedView style={styles.authentication}>
       <LinearGradient

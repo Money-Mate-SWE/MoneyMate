@@ -16,7 +16,7 @@ import { router } from "expo-router";
 const Home = () => {
   const onPress = async () => {
     try {
-      router.push("/(tabs)");
+      router.replace("/(tabs)");
     } catch (e) {
       console.log(e);
     }

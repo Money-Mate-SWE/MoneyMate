@@ -22,9 +22,9 @@ export default function AuthenticateLayout() {
 
   return (
     <ThemeProvider value={colorScheme === "light" ? DarkTheme : DefaultTheme}>
-      <Stack screenOptions={{ headerShown: false }}>
+      <Stack screenOptions={{ headerShown: false, gestureEnabled: false }}>
         <Stack.Screen name="index" options={{ headerShown: false }} />
-        <Stack.Screen name="/userInfo" options={{ headerShown: false }} />
+        <Stack.Screen name="userInfo" options={{ headerShown: false }} />
       </Stack>
       <StatusBar style="auto" />
     </ThemeProvider>
