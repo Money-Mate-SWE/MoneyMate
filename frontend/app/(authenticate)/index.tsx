@@ -49,7 +49,7 @@ const LoginButton = () => {
 
 export default function Authenticate() {
   return (
-    <View style={styles.authentication}>
+    <ThemedView style={styles.authentication}>
       <LinearGradient
         style={styles.image1}
         locations={[0.28, 0.54, 0.82]}
@@ -64,7 +64,7 @@ export default function Authenticate() {
       />
       <ThemedText style={[styles.welcomeBack]}>Welcome Back</ThemedText>
       {LoginButton()}
-    </View>
+    </ThemedView>
   );
 }
 

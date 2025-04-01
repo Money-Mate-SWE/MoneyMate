@@ -34,10 +34,10 @@ const LogoutButton = () => {
   return (
     <ThemedView>
       <Pressable
-        style={[styles.Button, styles.buttonShadowBox]}
+        style={[styles.Button, styles.buttonShadowBox, styles.signout]}
         onPress={onPress}
       >
-        <ThemedText style={[styles.buttonText]}>Logout Using Auth0</ThemedText>
+        <ThemedText style={[styles.buttonText]}>Sign out</ThemedText>
       </Pressable>
     </ThemedView>
   );
@@ -54,7 +54,7 @@ const UpdateButton = () => {
   return (
     <ThemedView>
       <Pressable
-        style={[styles.Button, styles.buttonShadowBox]}
+        style={[styles.buttonShadowBox, styles.Button]}
         onPress={onPress}
       >
         <ThemedText style={[styles.buttonText]}>Update Profile</ThemedText>
@@ -81,23 +81,46 @@ export default function account() {
       <ThemedText>Profile information.</ThemedText>
       <ThemedView>
         <ThemedText>Username</ThemedText>
-        <TextInput style={styles.textInput} value="Username" />
+        <TextInput
+          style={styles.textInput}
+          value="Username"
+          editable={false}
+          selectTextOnFocus={false}
+        />
       </ThemedView>
       <ThemedView>
         <ThemedText>First Name</ThemedText>
-        <TextInput style={styles.textInput} value="First Name" />
+        <TextInput
+          style={styles.textInput}
+          value="First Name"
+          editable={false}
+          selectTextOnFocus={false}
+        />
       </ThemedView>
       <ThemedView>
         <ThemedText>Last Name</ThemedText>
-        <TextInput style={styles.textInput} value="Last Name" />
+        <TextInput
+          style={styles.textInput}
+          value="Last Name"
+          editable={false}
+          selectTextOnFocus={false}
+        />
       </ThemedView>
       <ThemedView>
         <ThemedText>Email</ThemedText>
-        <TextInput style={styles.textInput} value="email.address@email.com" />
+        <TextInput
+          style={styles.textInput}
+          value="email.address@email.com"
+          editable={false}
+          selectTextOnFocus={false}
+        />
       </ThemedView>
-      <ThemedView style={styles.buttonContainer}>
-        {UpdateButton()}
-        {LogoutButton()}
+      <ThemedView>{UpdateButton()}</ThemedView>
+      <ThemedView>{LogoutButton()}</ThemedView>
+      <ThemedView>
+        <ThemedText style={styles.warning}>
+          *Note: Signing out will redirect you to use safari.
+        </ThemedText>
       </ThemedView>
     </ParallaxScrollView>
   );
@@ -112,23 +135,18 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     marginTop: 10,
     marginBottom: 20,
-    width: "80%",
+    width: "95%",
     backgroundColor: "#fff",
     color: "rgba(0, 0, 0, 0.65)",
-  },
-  buttonContainer: {
-    flexDirection: "column",
-    justifyContent: "space-evenly",
-    alignItems: "center",
-    marginTop: 20,
-    width: "100%",
   },
   buttonShadowBox: {
     width: 250,
     backgroundColor: "#fff",
     borderRadius: 8,
-    left: 89,
     height: 50,
+    alignSelf: "center",
+    marginTop: 10,
+    marginBottom: 10,
     shadowOpacity: 1,
     elevation: 4,
     shadowRadius: 4,
@@ -137,7 +155,6 @@ const styles = StyleSheet.create({
       height: 4,
     },
     shadowColor: "rgba(0, 0, 0, 0.25)",
-    position: "absolute",
   },
   buttonText: {
     color: "rgba(0, 0, 0, 0.65)",
@@ -147,14 +164,8 @@ const styles = StyleSheet.create({
   },
   Button: {
     height: 50,
-    flex: 1,
     justifyContent: "center",
     alignItems: "center",
-    elevation: 4,
-    shadowColor: "#000",
-    shadowOpacity: 1,
-    shadowRadius: 4,
-    shadowOffset: { width: 0, height: 4 },
   },
   headerImage: {
     color: "#808080",
@@ -176,5 +187,14 @@ const styles = StyleSheet.create({
       },
     ],
     width: "100%",
+  },
+  warning: {
+    fontSize: 12,
+    marginTop: 10,
+    marginBottom: 10,
+    textAlign: "center",
+  },
+  signout: {
+    backgroundColor: "#D9534F",
   },
 });
