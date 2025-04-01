@@ -8,6 +8,9 @@ import { ThemedView } from "@/components/ThemedView";
 import { IconSymbol } from "@/components/ui/IconSymbol";
 import { useAuth0, Auth0Provider } from "react-native-auth0";
 import { router } from "expo-router";
+import { LinearGradient } from "expo-linear-gradient";
+
+import { StyleVariable } from "@/constants/GlobalStyles";
 
 const LogoutButton = () => {
   const { clearSession } = useAuth0();
@@ -37,36 +40,18 @@ export default function account() {
     <ParallaxScrollView
       headerBackgroundColor={{ light: "#D0D0D0", dark: "#353636" }}
       headerImage={
-        <IconSymbol
-          size={310}
-          color="#808080"
-          name="chevron.left.forwardslash.chevron.right"
-          style={styles.headerImage}
+        <LinearGradient
+          style={styles.friends}
+          locations={[0.32, 0.81, 0.94]}
+          colors={["#728e96", "#9dc5cf", "#bff0fc"]} //
         />
       }
     >
       <ThemedView style={styles.titleContainer}>
-        <ThemedText type="title">Explore</ThemedText>
+        <ThemedText type="title">Profile</ThemedText>
       </ThemedView>
-      <ThemedText>
-        This app includes example code to help you get started.
-      </ThemedText>
-      <Collapsible title="File-based routing">
-        <ThemedText>
-          This app has two screens:{" "}
-          <ThemedText type="defaultSemiBold">app/(tabs)/index.tsx</ThemedText>{" "}
-          and{" "}
-          <ThemedText type="defaultSemiBold">app/(tabs)/explore.tsx</ThemedText>
-        </ThemedText>
-        <ThemedText>
-          The layout file in{" "}
-          <ThemedText type="defaultSemiBold">app/(tabs)/_layout.tsx</ThemedText>{" "}
-          sets up the tab navigator.
-        </ThemedText>
-        <ExternalLink href="https://docs.expo.dev/router/introduction">
-          <ThemedText type="link">Learn more</ThemedText>
-        </ExternalLink>
-      </Collapsible>
+      <ThemedText>Profile information.</ThemedText>
+      <ThemedView></ThemedView>
       <Collapsible title="Android, iOS, and web support">
         <ThemedText>
           You can open this project on Android, iOS, and the web. To open the
@@ -180,5 +165,16 @@ const styles = StyleSheet.create({
   titleContainer: {
     flexDirection: "row",
     gap: 8,
+  },
+  friends: {
+    borderBottomLeftRadius: StyleVariable.radius100,
+    flex: 1,
+    height: 626,
+    transform: [
+      {
+        rotate: "0deg",
+      },
+    ],
+    width: "100%",
   },
 });
