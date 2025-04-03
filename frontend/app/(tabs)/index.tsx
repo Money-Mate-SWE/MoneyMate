@@ -4,8 +4,50 @@ import { HelloWave } from '@/components/HelloWave';
 import ParallaxScrollView from '@/components/ParallaxScrollView';
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
+import { GetUser } from "@/api/apiService";
+import { useAuth0 } from "react-native-auth0";
+import { useEffect, useState } from "react";
+import { Collapsible } from '@/components/Collapsible';
+
+
+
+const checkUserExists = async (email: string) => {
+  try {
+    const userProfile = await GetUser(email);
+    return userProfile;
+  } catch (error: any) {
+    if (error.response && error.response.status === 404) {
+      return null;
+    }
+    console.error("Error checking user existence:", error);
+    throw error;
+  }
+};
 
 export default function HomeScreen() {
+
+  const { user } = useAuth0();
+  const [Firstname, setFirstName] = useState("");
+  const [id, setId] = useState(""); // State to store the user ID
+
+
+  useEffect(() => {
+    if (user) {
+      const Email = user.email ?? "";
+      checkUserExists(Email)
+        .then((userProfile) => {
+          if (userProfile) {
+            setId(userProfile._id);
+            setFirstName(userProfile.firstname);
+          }
+
+        })
+        .catch((error) => {
+          console.error("Error checking user existence:", error);
+        });
+    }
+  }, [user]);
+
   return (
     <ParallaxScrollView
       headerBackgroundColor={{ light: '#A1CEDC', dark: '#1D3D47' }}
@@ -16,11 +58,15 @@ export default function HomeScreen() {
         />
       }>
       <ThemedView style={styles.titleContainer}>
-        <ThemedText type="title">Welcome!</ThemedText>
+        <ThemedText type="title">Hi {Firstname} !</ThemedText>
         <HelloWave />
       </ThemedView>
+      <ThemedText>Welcome to the Moneymate!</ThemedText>
+      {/* <ThemedText>Check you recent transaction and stay on top of</ThemedText>
+      <ThemedText>your finance today!</ThemedText> */}
+
       <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 1: Try it</ThemedText>
+        <ThemedText type="subtitle">Budget Insights</ThemedText>
         <ThemedText>
           Edit <ThemedText type="defaultSemiBold">app/(tabs)/index.tsx</ThemedText> to see changes.
           Press{' '}
@@ -34,8 +80,19 @@ export default function HomeScreen() {
           to open developer tools.
         </ThemedText>
       </ThemedView>
+      <Collapsible title="File-based routing">
+        <ThemedText>
+          This app has two screens:{' '}
+          <ThemedText type="defaultSemiBold">app/(tabs)/index.tsx</ThemedText> and{' '}
+          <ThemedText type="defaultSemiBold">app/(tabs)/explore.tsx</ThemedText>
+        </ThemedText>
+        <ThemedText>
+          The layout file in <ThemedText type="defaultSemiBold">app/(tabs)/_layout.tsx</ThemedText>{' '}
+          sets up the tab navigator.
+        </ThemedText>
+      </Collapsible>
       <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 2: Explore</ThemedText>
+        <ThemedText type="title">Transactions</ThemedText>
         <ThemedText>
           Tap the Explore tab to learn more about what's included in this starter app.
         </ThemedText>

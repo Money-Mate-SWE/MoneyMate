@@ -5,3 +5,13 @@ export interface UserInfo {
     lastname: string;
 }
 
+export interface expenseBill {
+    user: string;
+    store: string;
+    currency: string;
+    CardType: string;
+    amount: number;
+    tip: number;
+    TotalAmount: number;
+    date: Date;
+}

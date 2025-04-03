@@ -8,6 +8,7 @@ router.get('/getexpenseItems/:expenseId', expenseController.getExpenseItemsByExp
 router.get('/getexpenseByStores/:store', expenseController.getExpensesByStore); //Also provides the total amount of expenses in that store
 router.put('/updateExpense/:expenseId', expenseController.updateExpense);
 router.delete('/deleteExpense/:expenseId', expenseController.deleteExpense);
+router.get('/getexpenseByUser/:user', expenseController.getExpenseByUser);
 
 
 export default router;

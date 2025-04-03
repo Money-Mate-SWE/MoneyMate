@@ -1,6 +1,6 @@
 import ExpenseService from "../services/ExpenseServices.js";
 
-const isInvalidExpenseBillData = function(expenseBillData) {
+const isInvalidExpenseBillData = function (expenseBillData) {
     return !expenseBillData?.store || !expenseBillData?.amount || !expenseBillData?.CardType;
 };
 
@@ -97,6 +97,25 @@ const getExpensesByStore = async (req, res) => {
     }
 };
 
+const getExpenseByUser = async (req, res) => {
+    const userId = req.params.user.trim();
+
+    if (!userId) {
+        return res.status(400).json({
+            message: "Please enter User to find items!"
+        });
+    }
+
+    try {
+        const expenseItems = await ExpenseService.findExpenseItemsByUserId(userId);
+        return res.status(200).json(expenseItems);
+    } catch (err) {
+        console.error(err);
+        return res.status(500).json({
+            message: "There was an error while fetching the Expense Items!"
+        });
+    }
+};
 
 
 const updateExpense = async (req, res) => {
@@ -155,5 +174,6 @@ export default {
     getExpenseItemsByExpenseId,
     getExpensesByStore,
     updateExpense,
-    deleteExpense
+    deleteExpense,
+    getExpenseByUser
 };

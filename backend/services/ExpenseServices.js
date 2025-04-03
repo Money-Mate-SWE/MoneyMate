@@ -32,6 +32,10 @@ class ExpenseService {
         return { expenses, totalAmount: totalAmount[0]?.total || 0 };
     }
 
+    static async findExpenseItemsByUserId(userId) {
+        return ExpenseBill.find({ user: userId }).sort({ createdAt: -1 }).exec();
+    }
+
     static async updateExpense(expenseId, updatedData) {
         const { expenseBillData, expenseItemData } = updatedData;
 
@@ -48,7 +52,7 @@ class ExpenseService {
         await ExpenseBillItem.deleteMany({ BillId: expenseId }).exec();
         return ExpenseBill.deleteOne({ _id: expenseId }).exec();
     }
-    
+
 }
 
 export default ExpenseService;
