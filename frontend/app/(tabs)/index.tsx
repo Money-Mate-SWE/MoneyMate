@@ -4,10 +4,13 @@ import { HelloWave } from '@/components/HelloWave';
 import ParallaxScrollView from '@/components/ParallaxScrollView';
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
-import { GetUser } from "@/api/apiService";
+import { GetExpense, GetUser } from "@/api/apiService";
 import { useAuth0 } from "react-native-auth0";
 import { useEffect, useState } from "react";
 import { Collapsible } from '@/components/Collapsible';
+import FormComponent from '@/components/ui/FormComponent';
+import { ScrollView } from 'react-native';
+import { expenseBill } from '@/api/apiInterface';
 
 
 
@@ -28,7 +31,8 @@ export default function HomeScreen() {
 
   const { user } = useAuth0();
   const [Firstname, setFirstName] = useState("");
-  const [id, setId] = useState(""); // State to store the user ID
+  const [id, setId] = useState("");
+  const [data, setData] = useState<expenseBill[]>([]);
 
 
   useEffect(() => {
@@ -44,6 +48,15 @@ export default function HomeScreen() {
         })
         .catch((error) => {
           console.error("Error checking user existence:", error);
+        });
+      GetExpense(id)
+        .then((expenseData) => {
+          if (expenseData) {
+            setData(expenseData);
+          }
+        }
+        ).catch((error) => {
+          console.error("Error getting expense data:", error);
         });
     }
   }, [user]);
@@ -67,6 +80,19 @@ export default function HomeScreen() {
 
       <ThemedView style={styles.stepContainer}>
         <ThemedText type="subtitle">Budget Insights</ThemedText>
+        <ThemedView style={styles.container}>
+          {data.length > 0 ? (
+            <ScrollView style={styles.formContainer}>
+              {data.map((item) => (
+                <FormComponent key={item.date.toDateString()} data={item} />
+              ))}
+            </ScrollView>
+          ) : (
+            <ThemedView style={styles.row}>
+              <ThemedText>No history found</ThemedText>
+            </ThemedView>
+          )}
+        </ThemedView>
         <ThemedText>
           Edit <ThemedText type="defaultSemiBold">app/(tabs)/index.tsx</ThemedText> to see changes.
           Press{' '}
@@ -112,6 +138,20 @@ export default function HomeScreen() {
 }
 
 const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    padding: 16,
+  },
+  formContainer: {
+    width: "100%",
+  },
+  row: {
+    justifyContent: "center",
+    alignItems: "center",
+    padding: 16,
+  },
   titleContainer: {
     flexDirection: 'row',
     alignItems: 'center',

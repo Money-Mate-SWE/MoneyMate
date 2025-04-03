@@ -36,3 +36,14 @@ export const UpdateUser = async (userId: string, userInfo: UserInfo) => {
   }
 };
 
+//transaction
+export const GetExpense = async (userId: string) => {
+  try {
+    const response = await api.put(`/expense/getexpenseByUser/${userId}`,);
+    return response.data;
+  } catch (error) {
+    console.error("Error getting expense info:", error);
+    throw error;
+  }
+};
+
