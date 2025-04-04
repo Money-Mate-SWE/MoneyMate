@@ -79,34 +79,9 @@ export default function HomeScreen() {
       <ThemedText>your finance today!</ThemedText> */}
 
       <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Budget Insights</ThemedText>
-        <ThemedView style={styles.container}>
-          {data.length > 0 ? (
-            <ScrollView style={styles.formContainer}>
-              {data.map((item) => (
-                <FormComponent key={item.date.toDateString()} data={item} />
-              ))}
-            </ScrollView>
-          ) : (
-            <ThemedView style={styles.row}>
-              <ThemedText>No history found</ThemedText>
-            </ThemedView>
-          )}
-        </ThemedView>
-        <ThemedText>
-          Edit <ThemedText type="defaultSemiBold">app/(tabs)/index.tsx</ThemedText> to see changes.
-          Press{' '}
-          <ThemedText type="defaultSemiBold">
-            {Platform.select({
-              ios: 'cmd + d',
-              android: 'cmd + m',
-              web: 'F12'
-            })}
-          </ThemedText>{' '}
-          to open developer tools.
-        </ThemedText>
+        <ThemedText type="title">Budget Insights</ThemedText>
       </ThemedView>
-      <Collapsible title="File-based routing">
+      {/* <Collapsible title="File-based routing">
         <ThemedText>
           This app has two screens:{' '}
           <ThemedText type="defaultSemiBold">app/(tabs)/index.tsx</ThemedText> and{' '}
@@ -116,9 +91,22 @@ export default function HomeScreen() {
           The layout file in <ThemedText type="defaultSemiBold">app/(tabs)/_layout.tsx</ThemedText>{' '}
           sets up the tab navigator.
         </ThemedText>
-      </Collapsible>
+      </Collapsible> */}
       <ThemedView style={styles.stepContainer}>
         <ThemedText type="title">Transactions</ThemedText>
+        <ThemedView style={styles.container}>
+          {data.length > 0 ? (
+            <ScrollView style={styles.formContainer}>
+              {data.map((item) => (
+                <FormComponent key={item.date} data={item} />
+              ))}
+            </ScrollView>
+          ) : (
+            <ThemedView style={styles.row}>
+              <ThemedText>No history found</ThemedText>
+            </ThemedView>
+          )}
+        </ThemedView>
         <ThemedText>
           Tap the Explore tab to learn more about what's included in this starter app.
         </ThemedText>
@@ -143,9 +131,13 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     padding: 16,
+    backgroundColor: "#A1CEDC",
+    borderRadius: 8,
   },
   formContainer: {
     width: "100%",
+    backgroundColor: "#728e96",
+    borderRadius: 8,
   },
   row: {
     justifyContent: "center",

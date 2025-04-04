@@ -13,5 +13,5 @@ export interface expenseBill {
     amount: number;
     tip: number;
     TotalAmount: number;
-    date: Date;
+    date: string;
 }
