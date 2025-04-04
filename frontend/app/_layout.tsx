@@ -41,6 +41,17 @@ export default function RootLayout() {
         <Stack screenOptions={{ headerShown: false }}>
           <Stack.Screen name="(authenticate)" />
           <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+          <Stack.Screen name="transactions" options={{
+            headerShown: true,
+            title: "Transactions",
+            headerBackButtonDisplayMode: "minimal",
+            headerStyle: {
+              backgroundColor: "#728e96",
+            },
+            headerTitleStyle: {
+              color: "#000",
+            },
+          }} />
           <Stack.Screen name="+not-found" />
         </Stack>
       </Auth0Provider>

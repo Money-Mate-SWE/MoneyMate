@@ -1,4 +1,4 @@
-import { Image, StyleSheet, Platform } from 'react-native';
+import { Image, StyleSheet, Platform, Pressable } from 'react-native';
 
 import { HelloWave } from '@/components/HelloWave';
 import ParallaxScrollView from '@/components/ParallaxScrollView';
@@ -11,6 +11,8 @@ import { Collapsible } from '@/components/Collapsible';
 import FormComponent from '@/components/ui/FormComponent';
 import { ScrollView } from 'react-native';
 import { expenseBill } from '@/api/apiInterface';
+import { useRouter } from 'expo-router';
+
 
 
 
@@ -33,6 +35,12 @@ export default function HomeScreen() {
   const [Firstname, setFirstName] = useState("");
   const [id, setId] = useState("");
   const [data, setData] = useState<expenseBill[]>([]);
+  const router = useRouter();
+
+  const goToNewPage = () => {
+    const dataToPass = { amount: 100, description: 'Transaction data' };
+    router.push("/transactions")
+  };
 
 
   useEffect(() => {
@@ -44,20 +52,20 @@ export default function HomeScreen() {
             setId(userProfile._id);
             setFirstName(userProfile.firstname);
           }
-
+          GetExpense(userProfile._id)
+            .then((expenseData) => {
+              if (expenseData) {
+                setData(expenseData);
+              }
+            }
+            ).catch((error) => {
+              console.error("Error getting expense data:", error);
+            });
         })
         .catch((error) => {
           console.error("Error checking user existence:", error);
         });
-      GetExpense(id)
-        .then((expenseData) => {
-          if (expenseData) {
-            setData(expenseData);
-          }
-        }
-        ).catch((error) => {
-          console.error("Error getting expense data:", error);
-        });
+
     }
   }, [user]);
 
@@ -79,7 +87,7 @@ export default function HomeScreen() {
       <ThemedText>your finance today!</ThemedText> */}
 
       <ThemedView style={styles.stepContainer}>
-        <ThemedText type="title">Budget Insights</ThemedText>
+        <ThemedText type="subtitle">Budget Insights</ThemedText>
       </ThemedView>
       {/* <Collapsible title="File-based routing">
         <ThemedText>
@@ -93,7 +101,7 @@ export default function HomeScreen() {
         </ThemedText>
       </Collapsible> */}
       <ThemedView style={styles.stepContainer}>
-        <ThemedText type="title">Transactions</ThemedText>
+        <ThemedText type="subtitle">Recent Transactions</ThemedText>
         <ThemedView style={styles.container}>
           {data.length > 0 ? (
             <ScrollView style={styles.formContainer}>
@@ -107,25 +115,48 @@ export default function HomeScreen() {
             </ThemedView>
           )}
         </ThemedView>
-        <ThemedText>
-          Tap the Explore tab to learn more about what's included in this starter app.
-        </ThemedText>
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 3: Get a fresh start</ThemedText>
-        <ThemedText>
-          When you're ready, run{' '}
-          <ThemedText type="defaultSemiBold">npm run reset-project</ThemedText> to get a fresh{' '}
-          <ThemedText type="defaultSemiBold">app</ThemedText> directory. This will move the current{' '}
-          <ThemedText type="defaultSemiBold">app</ThemedText> to{' '}
-          <ThemedText type="defaultSemiBold">app-example</ThemedText>.
-        </ThemedText>
+        <ThemedView>
+          <Pressable
+            style={[styles.buttonShadowBox, styles.Button]}
+            onPress={goToNewPage}
+          >
+            <ThemedText style={[styles.buttonText]}>See All</ThemedText>
+          </Pressable>
+        </ThemedView>
       </ThemedView>
     </ParallaxScrollView>
   );
 }
 
 const styles = StyleSheet.create({
+  buttonShadowBox: {
+    width: 100,
+    backgroundColor: "#fff",
+    borderRadius: 8,
+    height: 40,
+    alignSelf: "flex-end",
+    marginTop: 10,
+    marginBottom: 10,
+    shadowOpacity: 1,
+    elevation: 4,
+    shadowRadius: 4,
+    shadowOffset: {
+      width: 0,
+      height: 4,
+    },
+    shadowColor: "rgba(0, 0, 0, 0.25)",
+  },
+  buttonText: {
+    color: "rgba(0, 0, 0, 0.65)",
+    fontSize: 16,
+    lineHeight: 35,
+    textAlign: "center",
+  },
+  Button: {
+    height: 40,
+    justifyContent: "center",
+    alignItems: "center",
+  },
   container: {
     flex: 1,
     justifyContent: "center",
