@@ -56,8 +56,9 @@ export default function Transactions() {
 
     return (
         <ThemedView style={{ flex: 1, backgroundColor: "#A1CEDC" }}>
+            <ThemedText type="subtitle" style={{ marginTop: "10%", marginLeft: 20 }}>Transactions History</ThemedText>
+
             <ThemedView style={styles.stepContainer}>
-                <ThemedText type="subtitle">Recent Transactions</ThemedText>
                 <ThemedView >
                     {data.length > 0 ? (
                         <ScrollView style={styles.formContainer}>
@@ -97,7 +98,9 @@ const styles = StyleSheet.create({
     stepContainer: {
         gap: 8,
         marginBottom: 8,
-        marginTop: "20%",
+        marginTop: "10%",
+        marginLeft: "5%",
+        marginRight: "5%",
     },
 
 });

@@ -14,7 +14,7 @@ import { ThemedText } from "@/components/ThemedText";
 import { ThemedView } from "@/components/ThemedView";
 import { IconSymbol } from "@/components/ui/IconSymbol";
 import { useAuth0 } from "react-native-auth0";
-import { GetUser,UpdateUser } from "@/api/apiService";
+import { GetUser, UpdateUser } from "@/api/apiService";
 import { UserInfo } from "@/api/apiInterface";
 import { router } from "expo-router";
 import { LinearGradient } from "expo-linear-gradient";
@@ -95,14 +95,14 @@ export default function account() {
       const Email = user.email ?? "";
       checkUserExists(Email)
         .then((userProfile) => {
-          if (userProfile){
+          if (userProfile) {
             setId(userProfile._id); // Set the user ID
             setFirstName(userProfile.firstname);
             setLastName(userProfile.lastname);
             setUsername(userProfile.username);
             setEmail(userProfile.email);
           }
-          
+
         })
         .catch((error) => {
           console.error("Error checking user existence:", error);
@@ -112,7 +112,7 @@ export default function account() {
 
   const onPressUpdate = async () => {
     try {
-      if(buttonText === "Submit"){
+      if (buttonText === "Submit") {
         if (
           !userName.trim().toLowerCase() ||
           !Firstname.trim() ||
@@ -121,12 +121,13 @@ export default function account() {
           alert("Please enter all the information.");
           return;
         }
-        else{
+        else {
           await UpdateUser(id, {
             username: userName,
             email: user?.email ?? "",
             firstname: Firstname,
-            lastname: Lastname,})
+            lastname: Lastname,
+          })
         }
 
       }
@@ -169,9 +170,8 @@ export default function account() {
         <TextInput
           style={styles.textInput}
           value={userName}
-          editable={buttonText === "Submit"}
-          selectTextOnFocus={buttonText === "Submit"}
-          onChangeText={(text) => setUsername(text)}
+          editable={false}
+          selectTextOnFocus={false}
         />
       </ThemedView>
       <ThemedView>
