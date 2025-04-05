@@ -39,7 +39,7 @@ export default function HomeScreen() {
 
   const goToNewPage = () => {
     const dataToPass = { amount: 100, description: 'Transaction data' };
-    router.push("/transactions")
+    router.push("/(transaction)/transactions")
   };
 
 
@@ -105,8 +105,8 @@ export default function HomeScreen() {
         <ThemedView style={styles.container}>
           {data.length > 0 ? (
             <ScrollView style={styles.formContainer}>
-              {data.map((item) => (
-                <FormComponent key={item.date} data={item} />
+              {data.slice(0, 5).map((item) => (
+                <FormComponent key={item._id} data={item} />
               ))}
             </ScrollView>
           ) : (

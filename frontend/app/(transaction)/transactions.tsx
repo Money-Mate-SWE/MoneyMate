@@ -10,6 +10,7 @@ import { useEffect, useState } from "react";
 import { expenseBill } from '@/api/apiInterface';
 import { useAuth0 } from 'react-native-auth0';
 import { GetExpense, GetUser } from "@/api/apiService";
+import { router } from 'expo-router';
 
 
 
@@ -56,14 +57,14 @@ export default function Transactions() {
 
     return (
         <ThemedView style={{ flex: 1, backgroundColor: "#A1CEDC" }}>
-            <ThemedText type="subtitle" style={{ marginTop: "10%", marginLeft: 20 }}>Transactions History</ThemedText>
+            <ThemedText type="subtitle" style={{ marginTop: "10%", marginLeft: 20 }}>Expense History</ThemedText>
 
-            <ThemedView style={styles.stepContainer}>
-                <ThemedView >
+            <ThemedView style={styles.container}>
+                <ThemedView style={styles.container}>
                     {data.length > 0 ? (
                         <ScrollView style={styles.formContainer}>
                             {data.map((item) => (
-                                <FormComponent key={item.date} data={item} />
+                                <FormComponent key={item._id} data={item} />
                             ))}
                         </ScrollView>
                     ) : (
@@ -73,6 +74,16 @@ export default function Transactions() {
                     )}
                 </ThemedView>
             </ThemedView>
+
+            <Pressable
+                style={[styles.buttonShadowBox, styles.Button]}
+                onPress={() => {
+                    router.push("/(tabs)");
+                }
+                }
+            >
+                <ThemedText style={[styles.buttonText]}>Home</ThemedText>
+            </Pressable>
         </ThemedView>
 
 
@@ -95,12 +106,40 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         gap: 8,
     },
-    stepContainer: {
-        gap: 8,
-        marginBottom: 8,
-        marginTop: "10%",
-        marginLeft: "5%",
-        marginRight: "5%",
+    container: {
+        justifyContent: "center",
+        padding: 7,
+        paddingTop: 0,
+        backgroundColor: "#728e96",
+        borderRadius: 8,
+        marginTop: 10,
     },
-
+    buttonShadowBox: {
+        width: 100,
+        backgroundColor: "#fff",
+        borderRadius: 8,
+        height: 30,
+        alignSelf: "center",
+        marginTop: 10,
+        marginBottom: 10,
+        shadowOpacity: 1,
+        elevation: 4,
+        shadowRadius: 4,
+        shadowOffset: {
+            width: 0,
+            height: 4,
+        },
+        shadowColor: "rgba(0, 0, 0, 0.25)",
+    },
+    buttonText: {
+        color: "rgba(0, 0, 0, 0.65)",
+        fontSize: 15,
+        lineHeight: 25,
+        textAlign: "center",
+    },
+    Button: {
+        height: 30,
+        justifyContent: "center",
+        alignItems: "center",
+    },
 });

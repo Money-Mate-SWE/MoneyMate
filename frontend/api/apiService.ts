@@ -37,6 +37,7 @@ export const UpdateUser = async (userId: string, userInfo: UserInfo) => {
 };
 
 //transaction
+//get expense by user
 export const GetExpense = async (userId: string) => {
   try {
     const response = await api.get(`/expense/getexpenseByUser/${userId}`,);
@@ -46,4 +47,27 @@ export const GetExpense = async (userId: string) => {
     throw error;
   }
 };
+
+//get expense by id
+export const GetExpenseById = async (expenseId: string) => {
+  try {
+    const response = await api.get(`/expense/getexpense/${expenseId}`);
+    return response.data;
+  } catch (error) {
+    console.error("Error getting expense info:", error);
+    throw error;
+  }
+};
+
+//get expense items by id
+export const GetExpenseItemsById = async (expenseId: string) => {
+  try {
+    const response = await api.get(`/expense/getexpenseItems/${expenseId}`);
+    return response.data;
+  } catch (error) {
+    console.error("Error getting expense info:", error);
+    throw error;
+  }
+};
+
 

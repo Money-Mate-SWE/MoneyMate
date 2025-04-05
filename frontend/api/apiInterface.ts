@@ -6,6 +6,7 @@ export interface UserInfo {
 }
 
 export interface expenseBill {
+    _id: string;
     user: string;
     store: string;
     currency: string;
@@ -14,4 +15,11 @@ export interface expenseBill {
     tip: number;
     TotalAmount: number;
     date: string;
+}
+
+export interface expenseBillItem {
+    _id: string;
+    itemName: string;
+    quantity: number;
+    amount: number;
 }
