@@ -36,6 +36,18 @@ class ExpenseService {
         return ExpenseBill.find({ user: userId }).sort({ createdAt: -1 }).exec();
     }
 
+    static async findExpensesByUserAndStore(userId, store) {
+        const expenses = await ExpenseBill.find({ user: userId, store }).sort({ createdAt: -1 }).exec();
+        const totalAmountResult = await ExpenseBill.aggregate([
+            { $match: { user: userId, store } },
+            { $group: { _id: null, total: { $sum: "$TotalAmount" } } }
+        ]);
+
+        const totalAmount = totalAmountResult.length > 0 ? totalAmountResult[0].total : 0;
+
+        return { expenses, totalAmount };
+    }
+
     static async updateExpense(expenseId, updatedData) {
         const { expenseBillData, expenseItemData } = updatedData;
 

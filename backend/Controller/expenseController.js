@@ -76,9 +76,16 @@ const getExpenseItemsByExpenseId = async (req, res) => {
 };
 
 
-
 const getExpensesByStore = async (req, res) => {
+    const userId = req.params.user.trim();
     const store = req.params.store.trim();
+
+
+    if (!userId) {
+        return res.status(400).json({
+            message: "Please enter User to find items!"
+        });
+    }
 
     if (!store) {
         return res.status(400).json({
@@ -87,8 +94,13 @@ const getExpensesByStore = async (req, res) => {
     }
 
     try {
-        const expenses = await ExpenseService.findExpensesByStore(store);
-        return res.status(200).json(expenses);
+        const { expenses, totalAmount } = await ExpenseService.findExpensesByUserAndStore(userId, store);
+        const Amount = expenses.reduce((sum, expense) => sum + (expense.TotalAmount || 0), 0);
+
+        return res.status(200).json({
+            expenses,
+            Amount
+        });
     } catch (err) {
         console.error(err);
         return res.status(500).json({
