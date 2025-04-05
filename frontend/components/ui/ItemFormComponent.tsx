@@ -4,29 +4,77 @@ import { expenseBillItem } from "@/api/apiInterface";
 import { ThemedView } from "../ThemedView";
 import { ThemedText } from "../ThemedText";
 import { router } from "expo-router";
+import { useState } from "react";
 
-const ItemFormComponent = ({ data }: { data: expenseBillItem }) => {
+const ItemFormComponent = ({ data, edit, onItemChange }: { data: expenseBillItem, edit: boolean, onItemChange: (updatedItem: expenseBillItem) => void }) => {
+    const [itemName, setItemName] = useState(data.itemName);
+    const [quantity, setQuantity] = useState(data.quantity.toString());
+    const [amount, setAmount] = useState(data.amount.toString());
+
+    const handleNameChange = (name: string) => {
+        setItemName(name);
+        updateParentData(name, quantity, amount);
+    };
+
+    const handleQuantityChange = (qty: string) => {
+        setQuantity(qty);
+        updateParentData(itemName, qty, amount);
+    };
+
+    const handleAmountChange = (amt: string) => {
+        setAmount(amt);
+        updateParentData(itemName, quantity, amt);
+    };
+
+    const updateParentData = (name: string, qty: string, amt: string) => {
+        // Update the parent with the new data
+        onItemChange({
+            ...data,
+            itemName: name,
+            quantity: parseInt(qty),
+            amount: parseFloat(amt),
+        });
+    };
+
     return (
 
         <ThemedView style={styles.form}>
             <ThemedView style={styles.inputContainer}>
                 <TextInput
                     style={styles.input}
-                    value={data.itemName}
-                    editable={false}
+                    value={itemName}
+                    editable={edit}
+                    onChangeText={handleNameChange}
                 />
-                <TextInput
-                    style={styles.inputQty}
-                    value={`Qty: ${data.quantity.toString()}`}
-                    editable={false}
-                />
+                <ThemedView style={[styles.inputQty, { flexDirection: 'row', gap: 5 }]}>
+                    <TextInput
+                        // style={styles.inputQty}
+                        value={`Qty: `}
+                        editable={false}
+                    />
+                    <TextInput
+                        // style={styles.inputQty}
+                        value={quantity}
+                        editable={edit}
+                        onChangeText={handleQuantityChange}
+                        keyboardType="numeric"
+                    />
+                </ThemedView>
+
             </ThemedView>
 
-            <ThemedView style={styles.inputContainer}>
+            <ThemedView style={[styles.inputContainer, { flexDirection: 'row', }]}>
                 <TextInput
-                    style={styles.input}
-                    value={`$${String(data.amount)}`}
+                    // style={styles.input}
+                    value={`$`}
                     editable={false}
+                />
+                <TextInput
+                    // style={styles.input}
+                    value={amount}
+                    editable={edit}
+                    onChangeText={handleAmountChange}
+                    keyboardType="numeric"
                 />
             </ThemedView>
         </ThemedView>

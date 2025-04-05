@@ -6,7 +6,7 @@ import { Pressable, ScrollView } from 'react-native';
 import { useEffect, useState } from "react";
 import { expenseBill, expenseBillItem } from '@/api/apiInterface';
 import { useAuth0 } from 'react-native-auth0';
-import { GetExpenseById, GetExpenseItemsById } from "@/api/apiService";
+import { GetExpenseById, GetExpenseItemsById, UpdateExpense } from "@/api/apiService";
 import { router } from 'expo-router';
 import { useLocalSearchParams } from 'expo-router';
 import ItemFormComponent from '@/components/ui/ItemFormComponent';
@@ -19,11 +19,61 @@ export default function TransactionDetail() {
     const { id } = useLocalSearchParams();
     const [data, setData] = useState<expenseBill>();
     const [itemData, setItemData] = useState<expenseBillItem[]>([]);
+    const [buttonText, setButtonText] = useState("Update");
+    const [store, setStore] = useState("");
+    const [amount, setAmount] = useState("");
+    const [tax, setTax] = useState("");
+    const [total, setTotal] = useState("");
+    const [cardType, setCardType] = useState("");
+    const [date, setDate] = useState("");
+
+    const onPress = () => {
+        if (buttonText === "Save") {
+            const expenseBillData = {
+                store: store,
+                amount: parseFloat(amount),
+                tip: parseFloat(tax),
+                TotalAmount: parseFloat(total),
+                CardType: cardType,
+                date: date,
+            };
+            const expenseItemData = itemData.map((item) => ({
+                ...item,
+                itemName: item.itemName,
+                quantity: item.quantity,
+                amount: parseFloat(item.amount.toString()),
+            }));
+            const idAsString = Array.isArray(id) ? id[0] : id;
+
+            console.log(JSON.stringify({ expenseBillData, expenseItemData }));
+            UpdateExpense(idAsString, JSON.stringify({ expenseBillData, expenseItemData })).then(() => {
+                setButtonText(prevState => prevState === "Update" ? "Save" : "Update");
+            });
+        }
+        else if (buttonText === "Update") {
+            setButtonText("Save");
+        }
+
+    }
+
+    const handleItemChange = (updatedItem: expenseBillItem) => {
+        setItemData((prevData) =>
+            prevData.map((item) =>
+                item._id === updatedItem._id ? updatedItem : item
+            )
+        );
+    };
 
     useEffect(() => {
         if (user && typeof id === "string") {
             GetExpenseById(id).then((expenseData) => {
                 setData(expenseData);
+                setStore(expenseData.store);
+                setAmount(expenseData.amount.toString());
+                setTax(expenseData.tip.toString());
+                setTotal(expenseData.TotalAmount.toString());
+                setCardType(expenseData.CardType);
+                setDate(expenseData.date.split("T")[0]);
 
             }
             ).catch((error) => {
@@ -63,8 +113,9 @@ export default function TransactionDetail() {
                             <ThemedView style={styles.inputContainer}>
                                 <TextInput
                                     style={styles.input}
-                                    value={data?.store}
-                                    editable={false}
+                                    value={store}
+                                    editable={buttonText === "Save" ? true : false}
+                                    onChangeText={(text) => setStore(text)}
                                 />
                             </ThemedView>
                         </ThemedView>
@@ -99,8 +150,9 @@ export default function TransactionDetail() {
                             <ThemedView style={styles.inputContainer}>
                                 <TextInput
                                     style={styles.input}
-                                    value={data?.amount.toString()}
-                                    editable={false}
+                                    value={amount}
+                                    editable={buttonText === "Save" ? true : false}
+                                    onChangeText={(text) => setAmount(text)}
                                 />
                             </ThemedView>
                         </ThemedView>
@@ -117,8 +169,9 @@ export default function TransactionDetail() {
                             <ThemedView style={styles.inputContainer}>
                                 <TextInput
                                     style={styles.input}
-                                    value={data?.tip.toString()}
-                                    editable={false}
+                                    value={tax}
+                                    editable={buttonText === "Save" ? true : false}
+                                    onChangeText={(text) => setTax(text)}
                                 />
                             </ThemedView>
                         </ThemedView>
@@ -135,8 +188,9 @@ export default function TransactionDetail() {
                             <ThemedView style={styles.inputContainer}>
                                 <TextInput
                                     style={styles.input}
-                                    value={data?.TotalAmount.toString()}
-                                    editable={false}
+                                    value={total}
+                                    editable={buttonText === "Save" ? true : false}
+                                    onChangeText={(text) => setTotal(text)}
                                 />
                             </ThemedView>
                         </ThemedView>
@@ -153,8 +207,9 @@ export default function TransactionDetail() {
                             <ThemedView style={styles.inputContainer}>
                                 <TextInput
                                     style={styles.input}
-                                    value={data?.CardType}
-                                    editable={false}
+                                    value={cardType}
+                                    editable={buttonText === "Save" ? true : false}
+                                    onChangeText={(text) => setCardType(text)}
                                 />
                             </ThemedView>
                         </ThemedView>
@@ -171,8 +226,9 @@ export default function TransactionDetail() {
                             <ThemedView style={styles.inputContainer}>
                                 <TextInput
                                     style={styles.input}
-                                    value={data?.date ? data?.date.split("T")[0] : ""}
-                                    editable={false}
+                                    value={date}
+                                    editable={buttonText === "Save" ? true : false}
+                                    onChangeText={(text) => setDate(text)}
                                 />
                             </ThemedView>
                         </ThemedView>
@@ -187,7 +243,7 @@ export default function TransactionDetail() {
                     {itemData.length > 0 ? (
                         <ThemedView style={styles.formContainer}>
                             {itemData.map((item) => (
-                                <ItemFormComponent key={item._id} data={item} />
+                                <ItemFormComponent key={item._id} data={item} edit={buttonText === "Save" ? true : false} onItemChange={handleItemChange} />
                             ))}
                         </ThemedView>
                     ) : (
@@ -197,6 +253,14 @@ export default function TransactionDetail() {
                     )}
                 </ThemedView>
             </ThemedView>
+            <Pressable
+                style={[styles.buttonShadowBox, styles.Button, { marginBottom: 10 }]}
+                onPress={
+                    onPress
+                }
+            >
+                <ThemedText style={[styles.buttonText]}>{buttonText}</ThemedText>
+            </Pressable>
             <Pressable
                 style={[styles.buttonShadowBox, styles.Button]}
                 onPress={() => {
@@ -231,7 +295,7 @@ const styles = StyleSheet.create({
     container: {
         justifyContent: "center",
         padding: 7,
-        paddingTop: 0,
+        paddingTop: 3,
         backgroundColor: "#728e96",
         borderRadius: 8,
         marginTop: 10,

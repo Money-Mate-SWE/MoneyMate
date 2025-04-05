@@ -1,5 +1,5 @@
 import api from "./api";
-import { UserInfo } from "@/api/apiInterface";
+import {UserInfo, expenseBill, expenseBillItem } from "@/api/apiInterface";
 
 //User api
 
@@ -69,5 +69,16 @@ export const GetExpenseItemsById = async (expenseId: string) => {
     throw error;
   }
 };
+
+//update expense
+export const UpdateExpense = async (expenseId: string, expenseInfo: any ) => {
+  try {
+    const response = await api.put(`/expense/updateExpense/${expenseId}`, expenseInfo);
+    return response.data;
+  } catch (error) {
+    console.error("Error updating expense info:", error);
+    throw error;
+  }
+}
 
 
