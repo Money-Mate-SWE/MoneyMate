@@ -182,7 +182,7 @@ export default function DebtDetail() {
                 }
                 }
             >
-                <ThemedText style={[styles.buttonText]}>Home</ThemedText>
+                <ThemedText style={[styles.buttonText]}>Friends</ThemedText>
             </Pressable>
         </ScrollView>
 
