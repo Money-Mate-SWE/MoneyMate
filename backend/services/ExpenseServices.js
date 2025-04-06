@@ -48,6 +48,13 @@ class ExpenseService {
         return { expenses, totalAmount };
     }
 
+    static async findExpensesByDateRangeAndUser(startDate, endDate, userId) {
+        return ExpenseBill.find({
+            user: userId,
+            date: { $gte: startDate, $lte: endDate }
+        }).sort({ date: -1 }).exec();
+    }
+
     static async updateExpense(expenseId, updatedData) {
         const { expenseBillData, expenseItemData } = updatedData;
 

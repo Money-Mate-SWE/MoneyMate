@@ -157,6 +157,40 @@ const updateExpense = async (req, res) => {
     }
 };
 
+
+const getExpensesByDateRangeAndUser = async (req, res) => {
+    try {
+        const { startDate, endDate, userId } = req.query;
+
+        if (!startDate || !endDate || !userId) {
+            return res.status(400).json({ message: "Missing required parameters: startDate, endDate, or userId" });
+        }
+
+        // Parse MM/DD/YYYY format to Date objects
+        const parseDate = (dateStr) => {
+            const [month, day, year] = dateStr.split("/").map(Number);
+            return new Date(year, month - 1, day);
+        };
+
+        const parsedStartDate = parseDate(startDate);
+        const parsedEndDate = parseDate(endDate);
+        parsedEndDate.setHours(23, 59, 59, 999); // Include the entire end date
+
+        const expenses = await ExpenseService.findExpensesByDateRangeAndUser(parsedStartDate, parsedEndDate, userId);
+
+        // Format dates in the response as MM/DD/YYYY
+        const formattedExpenses = expenses.map(expense => ({
+            ...expense._doc,
+            date: expense.date.toLocaleDateString("en-US"), // Format date as MM/DD/YYYY
+        }));
+
+        return res.status(200).json(formattedExpenses);
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({ message: "An error occurred while fetching expenses." });
+    }
+};
+
 const deleteExpense = async (req, res) => {
     const expenseId = req.params.expenseId.trim();
 
@@ -185,6 +219,7 @@ export default {
     getExpenseById,
     getExpenseItemsByExpenseId,
     getExpensesByStore,
+    getExpensesByDateRangeAndUser,
     updateExpense,
     deleteExpense,
     getExpenseByUser
