@@ -9,7 +9,7 @@ import AllDebtFormComponent from '@/components/ui/AllDebts';
 import { useEffect, useState } from "react";
 import { debtBill, expenseBill } from '@/api/apiInterface';
 import { useAuth0 } from 'react-native-auth0';
-import { GetDebtWithUser, GetUser } from "@/api/apiService";
+import { GetDebtWithUser, GetAllDebtWithUser, GetUser } from "@/api/apiService";
 import { router, useLocalSearchParams } from 'expo-router';
 
 
@@ -37,6 +37,8 @@ export default function debts() {
     const [total, setTotal] = useState(0);
     const [Firstname, setFirstName] = useState("");
     const [type, setType] = useState("");
+
+    const [buttonText, setButtonText] = useState("Show all settled");
 
     useEffect(() => {
         if (user) {
@@ -67,6 +69,42 @@ export default function debts() {
 
         }
     }, [user]);
+
+    const onPress = () => {
+        if (buttonText === "Show all settled") {
+            setButtonText("Collapse settled");
+            const idAsString = Array.isArray(ConnectedId) ? ConnectedId[0] : ConnectedId;
+            GetAllDebtWithUser(id, idAsString)
+                .then((result) => {
+                    if (result) {
+                        setData(result.debts);
+                        setTotal(result.totalDue);
+                        setFirstName(result.ConnectedName);
+                        setType(result.debtType);
+                    }
+                }
+                ).catch((error) => {
+                    console.error("Error getting Debt data:", error);
+                });
+        } else {
+            setButtonText("Show all settled");
+            const idAsString = Array.isArray(ConnectedId) ? ConnectedId[0] : ConnectedId;
+            GetDebtWithUser(id, idAsString)
+                .then((result) => {
+                    if (result) {
+                        setData(result.debts);
+                        setTotal(result.totalDue);
+                        setFirstName(result.ConnectedName);
+                        setType(result.debtType);
+                    }
+                }
+                ).catch((error) => {
+                    console.error("Error getting Debt data:", error);
+                });
+        }
+
+
+    }
     return (
         <ScrollView style={{ flex: 1, backgroundColor: "#A1CEDC" }}>
             <ThemedView style={{ flex: 1, backgroundColor: "#A1CEDC", marginTop: "10%", marginLeft: 20, marginRight: 20, flexDirection: "row", alignItems: "center", gap: 20, justifyContent: "space-between" }}>
@@ -89,6 +127,14 @@ export default function debts() {
                     )}
                 </ThemedView>
             </ThemedView>
+
+            <Pressable
+                style={[styles.buttonShadowBox, styles.Button, { marginBottom: 10 }]}
+                onPress={onPress
+                }
+            >
+                <ThemedText style={[styles.buttonText]}>{buttonText}</ThemedText>
+            </Pressable>
 
             <Pressable
                 style={[styles.buttonShadowBox, styles.Button]}
@@ -130,7 +176,7 @@ const styles = StyleSheet.create({
         marginTop: 10,
     },
     buttonShadowBox: {
-        width: 100,
+        width: 200,
         backgroundColor: "#fff",
         borderRadius: 8,
         height: 30,

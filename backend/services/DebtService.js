@@ -67,11 +67,21 @@ class DebtService {
 
     static async findDebtsByLenderAndBorrower(lenderId, borrowerId) {
         return DebtBill.find({
-            $and: [
-                { lender: lenderId },
-                { "participant.person": borrowerId },
+            $or: [
+                {
+                    $and: [
+                        { lender: lenderId },
+                        { "participant.person": borrowerId },
+                    ]
+                },
+                {
+                    $and: [
+                        { lender: borrowerId },
+                        { "participant.person": lenderId },
+                    ]
+                },
             ]
-        }).sort({ createdAt: -1 }).exec();
+        }).populate('participant.person').populate('lender').sort({ createdAt: -1 }).exec();
     }
 
     static async findPendingDebtsByLenderAndBorrower(lenderId, borrowerId) {

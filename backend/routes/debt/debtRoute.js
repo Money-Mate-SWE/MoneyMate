@@ -20,6 +20,8 @@ router.get('/getDebtHistoryWithConnectedUser', DebtController.getDebtsWithConnec
 
 router.get('/getByLenderAndBorrower', DebtController.getPendingDebtsByLenderAndBorrower);
 
+router.get('/getAllByLenderAndBorrower', DebtController.getAllDebtsByLenderAndBorrower);
+
 router.post('/getByLenderAndBorrowers/:lenderId', DebtController.getPendingDebtsByLenderAndBorrowers);
 
 router.put('/updateDebt/:debtId', DebtController.updateDebt);

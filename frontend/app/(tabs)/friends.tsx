@@ -96,11 +96,11 @@ export default function Friends() {
 
 const styles = StyleSheet.create({
   buttonShadowBox: {
-    width: 100,
+    width: 200,
     backgroundColor: "#fff",
     borderRadius: 8,
     height: 40,
-    alignSelf: "flex-end",
+    alignSelf: "center",
     marginTop: 10,
     marginBottom: 10,
     shadowOpacity: 1,

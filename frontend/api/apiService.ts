@@ -106,6 +106,18 @@ export const GetDebtWithUser = async (userId: string, borrowerId: string) => {
   }
 }
 
+//get all debts with user
+export const GetAllDebtWithUser = async (userId: string, borrowerId: string) => {
+  try {
+    const url =`/debt/getAllByLenderAndBorrower?lenderId=${userId}&borrowerId=${borrowerId}`
+    const response = await api.get(url);
+    return response.data;
+  } catch (error) {
+    console.error("Error getting debt info:", error);
+    throw error;
+  }
+}
+
 //get debts by Id
 export const GetDebtById = async (debtId: string) => {
   try {
