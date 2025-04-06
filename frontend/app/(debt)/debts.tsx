@@ -7,10 +7,11 @@ import { ThemedView } from '@/components/ThemedView';
 import { Pressable, ScrollView } from 'react-native';
 import FormComponent from '@/components/ui/FormComponent';
 import { useEffect, useState } from "react";
-import { expenseBill } from '@/api/apiInterface';
+import { debtSummary, expenseBill } from '@/api/apiInterface';
 import { useAuth0 } from 'react-native-auth0';
-import { GetExpense, GetUser } from "@/api/apiService";
-import { router } from 'expo-router';
+import { GetDebtWithAllConnectedUser, GetUser } from "@/api/apiService";
+import { router, useLocalSearchParams } from 'expo-router';
+import DebtSummaryForm from '@/components/ui/DebtSummaryForm';
 
 
 
@@ -28,25 +29,31 @@ const checkUserExists = async (email: string) => {
 };
 
 
-export default function Transactions() {
+export default function Debts() {
     const { user } = useAuth0();
+    const { datas } = useLocalSearchParams();
 
-    const [data, setData] = useState<expenseBill[]>([]);
+
+    const [data, setData] = useState<debtSummary[]>([]);
 
     useEffect(() => {
         if (user) {
             const Email = user.email ?? "";
             checkUserExists(Email)
                 .then((userProfile) => {
-                    GetExpense(userProfile._id)
-                        .then((expenseData) => {
-                            if (expenseData) {
-                                setData(expenseData);
+                    if (userProfile) {
+                        const borrowerIds = userProfile.connectedUsers;
+                        GetDebtWithAllConnectedUser(userProfile._id, borrowerIds)
+                            .then((expenseData) => {
+                                if (expenseData) {
+                                    setData(expenseData.result);
+                                }
                             }
-                        }
-                        ).catch((error) => {
-                            console.error("Error getting expense data:", error);
-                        });
+                            ).catch((error) => {
+                                console.error("Error getting expense data:", error);
+                            }
+                            );
+                    }
                 })
                 .catch((error) => {
                     console.error("Error checking user existence:", error);
@@ -54,17 +61,16 @@ export default function Transactions() {
 
         }
     }, [user]);
-
     return (
         <ScrollView style={{ flex: 1, backgroundColor: "#A1CEDC" }}>
-            <ThemedText type="subtitle" style={{ marginTop: "10%", marginLeft: 20 }}>Expense History</ThemedText>
+            <ThemedText type="subtitle" style={{ marginTop: "10%", marginLeft: 20 }}>All Shared Expenses</ThemedText>
 
             <ThemedView style={styles.container}>
                 <ThemedView style={styles.container}>
                     {data.length > 0 ? (
                         <ScrollView style={styles.formContainer}>
                             {data.map((item) => (
-                                <FormComponent key={item._id} data={item} />
+                                <DebtSummaryForm key={item.ConnectedId} data={item} />
                             ))}
                         </ScrollView>
                     ) : (
@@ -78,7 +84,7 @@ export default function Transactions() {
             <Pressable
                 style={[styles.buttonShadowBox, styles.Button]}
                 onPress={() => {
-                    router.push("/(tabs)");
+                    router.push("/(tabs)/friends");
                 }
                 }
             >

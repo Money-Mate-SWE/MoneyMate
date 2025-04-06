@@ -81,4 +81,15 @@ export const UpdateExpense = async (expenseId: string, expenseInfo: any ) => {
   }
 }
 
+//Debt
 
+//get debt by user
+export const GetDebtWithAllConnectedUser = async (userId: string, borrowerIds: JSON) => {  
+  try {
+    const response = await api.post(`/debt/getByLenderAndBorrowers/${userId}`, {borrowerIds});
+    return response.data;
+  } catch (error) {
+    console.error("Error getting debt info:", error);
+    throw error;
+  }
+}

@@ -38,7 +38,6 @@ export default function HomeScreen() {
   const router = useRouter();
 
   const goToNewPage = () => {
-    const dataToPass = { amount: 100, description: 'Transaction data' };
     router.push("/(transaction)/transactions")
   };
 

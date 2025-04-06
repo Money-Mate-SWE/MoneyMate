@@ -3,6 +3,7 @@ export interface UserInfo {
     email: string;
     firstname: string;
     lastname: string;
+    connectedUsers: string[];
 }
 
 export interface expenseBill {
@@ -22,4 +23,30 @@ export interface expenseBillItem {
     itemName: string;
     quantity: number;
     amount: number;
+}
+
+export interface participantDebtBill {
+    person: UserInfo;
+    paid: number;
+    due: number;
+}
+
+export interface debtBill {
+    _id: string;
+    name: string;
+    amount: number;
+    currency: string;
+    status: string;
+    description: string;
+    lender: UserInfo;
+    participants: participantDebtBill[];
+}
+
+export interface debtSummary {
+    ConnectedId: string;
+    ConnectedName: string;
+    debtType: string;
+    totalDue: number;
+    debts: debtBill[];
+    debtsOwed: debtBill[];
 }

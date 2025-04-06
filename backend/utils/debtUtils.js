@@ -15,7 +15,8 @@ export const calculateAutoDueAmounts = async (billId) => {
 
             item.borrower.forEach(borrower => {
                 borrower.due = amountPerBorrower;
-                participantDueMap.set(borrower.person._id.toString(), amountPerBorrower);
+                const existingDue = participantDueMap.get(borrower.person._id.toString()) || 0;
+                participantDueMap.set(borrower.person._id.toString(), existingDue + amountPerBorrower);
             });
         }
     });
@@ -25,7 +26,13 @@ export const calculateAutoDueAmounts = async (billId) => {
 
             participant.due = participantDueMap.get(participant.person._id.toString()) + participant.due;
         }
+        if (debtBill.lender.toString() === participant.person._id.toString()) {
+            participant.due = 0;
+        }
+
     });
+
+
 
     await Promise.all(debtItems.map(item => item.save()));
     await debtBill.save();

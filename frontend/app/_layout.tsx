@@ -42,6 +42,7 @@ export default function RootLayout() {
           <Stack.Screen name="(authenticate)" />
           <Stack.Screen name="(tabs)" />
           <Stack.Screen name="(transaction)" />
+          <Stack.Screen name="(debt)" />
           <Stack.Screen name="+not-found" />
         </Stack>
       </Auth0Provider>
