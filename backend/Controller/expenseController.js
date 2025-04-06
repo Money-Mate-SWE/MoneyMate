@@ -214,6 +214,30 @@ const deleteExpense = async (req, res) => {
 };
 
 
+const deleteExpenseItem = async (req, res) => {
+    const expenseItemId = req.params.expenseItemId.trim();
+
+    if (!expenseItemId) {
+        return res.status(400).json({
+            message: "Please provide an Expense Item ID to delete!"
+        });
+    }
+
+    try {
+        const deletedExpenseItem = await ExpenseService.deleteExpenseItem(expenseItemId);
+
+        return res.status(200).json({
+            message: "Expense Item deleted successfully!",
+            deletedExpenseItem
+        });
+    } catch (err) {
+        console.error(err.message);
+        return res.status(404).json({
+            message: err.message || "An error occurred while deleting the Expense Item."
+        });
+    }
+};
+
 export default {
     createExpense,
     getExpenseById,
@@ -222,5 +246,6 @@ export default {
     getExpensesByDateRangeAndUser,
     updateExpense,
     deleteExpense,
+    deleteExpenseItem,
     getExpenseByUser
 };

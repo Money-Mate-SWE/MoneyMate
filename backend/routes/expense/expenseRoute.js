@@ -7,9 +7,10 @@ router.get('/getexpense/:expenseId', expenseController.getExpenseById);
 router.get('/getexpenseItems/:expenseId', expenseController.getExpenseItemsByExpenseId);
 router.get('/getexpenseByStores/:user/:store', expenseController.getExpensesByStore); //Also provides the total amount of expenses in that store
 router.get('/getExpensesByDateRangeAndUser/:dateRange', expenseController.getExpensesByDateRangeAndUser);
-router.get('/expensesrange/date-range', expenseController.getExpensesByDateRangeAndUser);
+router.get('/expensesrange/date-range', expenseController.getExpensesByDateRangeAndUser);//This should Have MM/DD/YYYY format
 router.put('/updateExpense/:expenseId', expenseController.updateExpense);
 router.delete('/deleteExpense/:expenseId', expenseController.deleteExpense);
+router.delete('/deleteExpenseItem/:expenseItemId', expenseController.deleteExpenseItem);
 router.get('/getexpenseByUser/:user', expenseController.getExpenseByUser);
 
 

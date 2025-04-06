@@ -72,6 +72,16 @@ class ExpenseService {
         return ExpenseBill.deleteOne({ _id: expenseId }).exec();
     }
 
+    static async deleteExpenseItem(expenseItemId) {
+        // Check if the expense item exists
+        const expenseItem = await ExpenseBillItem.findById(expenseItemId).exec();
+        if (!expenseItem) {
+            throw new Error("Expense Item not found or invalid ID.");
+        }
+
+        // Proceed to delete the expense item
+        return ExpenseBillItem.deleteOne({ _id: expenseItemId }).exec();
+    }
 }
 
 export default ExpenseService;
