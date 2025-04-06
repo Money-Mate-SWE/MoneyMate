@@ -5,13 +5,12 @@ import ParallaxScrollView from '@/components/ParallaxScrollView';
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
 import { Pressable, ScrollView } from 'react-native';
-import FormComponent from '@/components/ui/FormComponent';
+import AllDebtFormComponent from '@/components/ui/AllDebts';
 import { useEffect, useState } from "react";
-import { debtSummary, expenseBill } from '@/api/apiInterface';
+import { debtBill, expenseBill } from '@/api/apiInterface';
 import { useAuth0 } from 'react-native-auth0';
-import { GetDebtWithAllConnectedUser, GetUser } from "@/api/apiService";
+import { GetDebtWithUser, GetUser } from "@/api/apiService";
 import { router, useLocalSearchParams } from 'expo-router';
-import DebtSummaryForm from '@/components/ui/DebtSummaryForm';
 
 
 
@@ -29,12 +28,15 @@ const checkUserExists = async (email: string) => {
 };
 
 
-export default function Debts() {
+export default function debts() {
     const { user } = useAuth0();
-    const { datas } = useLocalSearchParams();
+    const [id, setId] = useState("");
+    const { ConnectedId } = useLocalSearchParams();
 
-
-    const [data, setData] = useState<debtSummary[]>([]);
+    const [data, setData] = useState<debtBill[]>([]);
+    const [total, setTotal] = useState(0);
+    const [Firstname, setFirstName] = useState("");
+    const [type, setType] = useState("");
 
     useEffect(() => {
         if (user) {
@@ -42,18 +44,22 @@ export default function Debts() {
             checkUserExists(Email)
                 .then((userProfile) => {
                     if (userProfile) {
-                        const borrowerIds = userProfile.connectedUsers;
-                        GetDebtWithAllConnectedUser(userProfile._id, borrowerIds)
-                            .then((expenseData) => {
-                                if (expenseData) {
-                                    setData(expenseData.result);
-                                }
-                            }
-                            ).catch((error) => {
-                                console.error("Error getting expense data:", error);
-                            }
-                            );
+                        setId(userProfile._id);
                     }
+                    const idAsString = Array.isArray(ConnectedId) ? ConnectedId[0] : ConnectedId;
+
+                    GetDebtWithUser(userProfile._id, idAsString)
+                        .then((result) => {
+                            if (result) {
+                                setData(result.debts);
+                                setTotal(result.totalDue);
+                                setFirstName(result.ConnectedName);
+                                setType(result.debtType);
+                            }
+                        }
+                        ).catch((error) => {
+                            console.error("Error getting Debt data:", error);
+                        });
                 })
                 .catch((error) => {
                     console.error("Error checking user existence:", error);
@@ -63,14 +69,17 @@ export default function Debts() {
     }, [user]);
     return (
         <ScrollView style={{ flex: 1, backgroundColor: "#A1CEDC" }}>
-            <ThemedText type="subtitle" style={{ marginTop: "10%", marginLeft: 20 }}>All Shared Expenses</ThemedText>
+            <ThemedView style={{ flex: 1, backgroundColor: "#A1CEDC", marginTop: "10%", marginLeft: 20, marginRight: 20, flexDirection: "row", alignItems: "center", gap: 20, justifyContent: "space-between" }}>
+                <ThemedText type="subtitle" >{Firstname} {type}</ThemedText>
+                <ThemedText type="subtitle" >{total}</ThemedText>
+            </ThemedView>
 
             <ThemedView style={styles.container}>
                 <ThemedView style={styles.container}>
                     {data.length > 0 ? (
                         <ScrollView style={styles.formContainer}>
                             {data.map((item) => (
-                                <DebtSummaryForm key={item.ConnectedId} data={item} />
+                                <AllDebtFormComponent key={item._id} data={item} id={id} connectedId={Array.isArray(ConnectedId) ? ConnectedId[0] : ConnectedId} />
                             ))}
                         </ScrollView>
                     ) : (
@@ -88,7 +97,7 @@ export default function Debts() {
                 }
                 }
             >
-                <ThemedText style={[styles.buttonText]}>Home</ThemedText>
+                <ThemedText style={[styles.buttonText]}>Friends</ThemedText>
             </Pressable>
         </ScrollView>
 

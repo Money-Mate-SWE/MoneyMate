@@ -25,7 +25,7 @@ export default function DebtsLayout() {
             <Stack >
                 <Stack.Screen name="debts" options={{
                     headerShown: true,
-                    title: "Shared Expenses",
+                    title: "All Shared Expenses",
                     headerBackButtonDisplayMode: "minimal",
                     headerStyle: {
                         backgroundColor: "#728e96",

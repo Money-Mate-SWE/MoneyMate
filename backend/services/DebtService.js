@@ -26,7 +26,7 @@ class DebtService {
     }
 
     static async findDebtItemsByDebtId(debtBillId) {
-        return DebtItem.find({ BillId: debtBillId }).exec();
+        return DebtItem.find({ BillId: debtBillId }).populate("borrower.person").exec();
     }
 
     static async findDebtByMultipleDebtIds(debtIds) {
@@ -76,20 +76,39 @@ class DebtService {
 
     static async findPendingDebtsByLenderAndBorrower(lenderId, borrowerId) {
         return DebtBill.find({
-            $and: [
-                { lender: lenderId },
-                { "participant.person": borrowerId },
-                { $or: [{ status: "not paid" }, { status: "partially paid" }] },
+            $or: [
                 {
-                    participant: {
-                        $elemMatch: {
-                            person: borrowerId,
-                            due: { $gt: 0 }
+                    $and: [
+                        { lender: lenderId },
+                        { "participant.person": borrowerId },
+                        { $or: [{ status: "not paid" }, { status: "partially paid" }] },
+                        {
+                            participant: {
+                                $elemMatch: {
+                                    person: borrowerId,
+                                    due: { $gt: 0 }
+                                }
+                            }
                         }
-                    }
-                }
+                    ]
+                },
+                {
+                    $and: [
+                        { lender: borrowerId },
+                        { "participant.person": lenderId },
+                        { $or: [{ status: "not paid" }, { status: "partially paid" }] },
+                        {
+                            participant: {
+                                $elemMatch: {
+                                    person: lenderId,
+                                    due: { $gt: 0 }
+                                }
+                            }
+                        }
+                    ]
+                },
             ]
-        }).populate('participant.person').populate('lender').sort({ createdAt: 1 }).exec();
+        }).populate('participant.person').populate('lender').sort({ createdAt: -1 }).exec();
     }
 
     static async findDebtsWithConnectedUser(lenderId, borrowerId) {

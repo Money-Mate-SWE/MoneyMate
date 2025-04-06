@@ -225,16 +225,33 @@ const getPendingDebtsByLenderAndBorrower = async (req, res) => {
     try {
         const debts = await DebtService.findPendingDebtsByLenderAndBorrower(lenderId, borrowerId);
         let totalDue = 0;
+        let ConnectedName = "";
+        let debtType = "";
 
         debts.forEach(debt => {
             debt.participant.forEach(participant => {
                 if (participant.person._id.toString() === borrowerId.toString()) {
                     totalDue += participant.due;
+                    ConnectedName = participant.person.firstname;
+                }
+                if (participant.person._id.toString() === lenderId.toString()) {
+                    totalDue -= participant.due;
+                    ConnectedName = debt.lender.firstname;
                 }
             });
         });
+        if (totalDue > 0) {
+            debtType = "Owes you";
+        }
+        else if (totalDue < 0) {
+            debtType = "You owe";
+        }
 
-        return res.status(200).json({ debts, totalDue });
+        else {
+            debtType = "settled";
+        }
+
+        return res.status(200).json({ debts, totalDue, ConnectedName, debtType });
     } catch (err) {
         console.error(err);
         return res.status(500).json({

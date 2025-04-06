@@ -83,10 +83,44 @@ export const UpdateExpense = async (expenseId: string, expenseInfo: any ) => {
 
 //Debt
 
-//get debt by user
+//get debt by users
 export const GetDebtWithAllConnectedUser = async (userId: string, borrowerIds: JSON) => {  
   try {
     const response = await api.post(`/debt/getByLenderAndBorrowers/${userId}`, {borrowerIds});
+    return response.data;
+  } catch (error) {
+    console.error("Error getting debt info:", error);
+    throw error;
+  }
+}
+
+//get debt with user
+export const GetDebtWithUser = async (userId: string, borrowerId: string) => {
+  try {
+    const url =`/debt/getByLenderAndBorrower?lenderId=${userId}&borrowerId=${borrowerId}`
+    const response = await api.get(url);
+    return response.data;
+  } catch (error) {
+    console.error("Error getting debt info:", error);
+    throw error;
+  }
+}
+
+//get debts by Id
+export const GetDebtById = async (debtId: string) => {
+  try {
+    const response = await api.get(`/debt/getDebt/${debtId}`);
+    return response.data;
+  } catch (error) {
+    console.error("Error getting debt info:", error);
+    throw error;
+  }
+}
+
+//get debt items by Id 
+export const GetDebtItemsById = async (debtId: string) => {
+  try {
+    const response = await api.get(`/debt/getDebtItemsByDebtId/${debtId}`);
     return response.data;
   } catch (error) {
     console.error("Error getting debt info:", error);

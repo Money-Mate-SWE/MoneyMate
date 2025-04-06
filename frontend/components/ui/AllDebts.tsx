@@ -1,30 +1,53 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { View, Text, TextInput, StyleSheet, Pressable } from "react-native";
-import { debtSummary } from "@/api/apiInterface";
+import { debtBill } from "@/api/apiInterface";
 import { ThemedView } from "../ThemedView";
 import { ThemedText } from "../ThemedText";
 import { router } from "expo-router";
-import { Color } from "@/constants/GlobalStyles";
 
-const DebtSummaryForm = ({ data }: { data: debtSummary }) => {
+
+const AllDebtFormComponent = ({ data, id, connectedId }: { data: debtBill, id: string, connectedId: string }) => {
+    const [debtType, setDebtType] = useState("");
+    const [amount, setAmount] = useState(0);
+
+    useEffect(() => {
+        if (id === data.lender._id) {
+            setDebtType("Owes you");
+            setAmount(data.participant.find(participant => participant.person._id === connectedId)?.due || 0);
+        }
+        else if (
+            data.participant?.some(participant => participant.person._id === id)
+        ) {
+            setDebtType("You owe");
+            setAmount(data.participant.find(participant => participant.person._id === id)?.due || 0);
+        }
+        else {
+            setDebtType("Settled");
+        }
+
+
+
+    }
+        , [id]);
+
     return (
         <Pressable onPress={() => {
             router.push({
-                pathname: "/(debt)/debts",
-                params: { ConnectedId: data.ConnectedId }
+                pathname: "/(debt)/debtDetail",
+                params: { Billid: data._id }
             })
         }}>
             <ThemedView style={styles.form}>
                 <ThemedView style={styles.inputContainer}>
                     <TextInput
                         style={styles.input}
-                        value={data.ConnectedName}
+                        value={data?.name}
                         editable={false}
                         pointerEvents="none"
                     />
                     <TextInput
                         style={styles.inputDate}
-                        value={data.debtType}
+                        value={data?.createdAt.split("T")[0]}
                         editable={false}
                         pointerEvents="none"
                     />
@@ -32,8 +55,14 @@ const DebtSummaryForm = ({ data }: { data: debtSummary }) => {
 
                 <ThemedView style={styles.inputContainer}>
                     <TextInput
-                        style={[styles.input]}
-                        value={`$${String(Math.abs(data.totalDue))}`}
+                        style={styles.inputDate}
+                        value={debtType}
+                        editable={false}
+                        pointerEvents="none"
+                    />
+                    <TextInput
+                        style={styles.input}
+                        value={`$${String(amount)}`}
                         editable={false}
                         pointerEvents="none"
                     />
@@ -76,4 +105,4 @@ const styles = StyleSheet.create({
     },
 });
 
-export default DebtSummaryForm;
+export default AllDebtFormComponent;

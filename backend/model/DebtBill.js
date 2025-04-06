@@ -7,7 +7,7 @@ const debtBillSchema = new mongoose.Schema({
         required: true
     },
     amount: {
-        type: mongoose.Schema.Types.Decimal128,
+        type: Number,
         required: true,
         min: 0.01, // Ensure the amount is positive
     },

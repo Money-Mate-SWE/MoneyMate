@@ -1,4 +1,5 @@
 export interface UserInfo {
+    _id: string;
     username: string;
     email: string;
     firstname: string;
@@ -39,7 +40,16 @@ export interface debtBill {
     status: string;
     description: string;
     lender: UserInfo;
-    participants: participantDebtBill[];
+    participant: participantDebtBill[];
+    createdAt: string;
+}
+
+export interface debtBillItem {
+    _id: string;
+    BillId: string;
+    item: string;
+    amount: number;
+    borrower: participantDebtBill[];
 }
 
 export interface debtSummary {

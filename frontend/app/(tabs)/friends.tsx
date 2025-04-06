@@ -35,9 +35,6 @@ export default function Friends() {
   const [data, setData] = useState<debtSummary[]>([]);
   const router = useRouter();
 
-  const goToNewPage = () => {
-    router.push("/(debt)/debts")
-  };
 
 
   useEffect(() => {
@@ -81,7 +78,7 @@ export default function Friends() {
         <ThemedView style={styles.container}>
           {data.length > 0 ? (
             <ScrollView style={styles.formContainer}>
-              {data.slice(0, 5).map((item) => (
+              {data.map((item) => (
                 <DebtSummaryForm key={item.ConnectedId} data={item} />
               ))}
             </ScrollView>
@@ -91,14 +88,7 @@ export default function Friends() {
             </ThemedView>
           )}
         </ThemedView>
-        <ThemedView>
-          <Pressable
-            style={[styles.buttonShadowBox, styles.Button]}
-            onPress={goToNewPage}
-          >
-            <ThemedText style={[styles.buttonText]}>See All</ThemedText>
-          </Pressable>
-        </ThemedView>
+
       </ThemedView>
     </ParallaxScrollView>
   );
