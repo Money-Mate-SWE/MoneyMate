@@ -87,6 +87,7 @@ export default function account() {
   const [email, setEmail] = useState("");
   const [id, setId] = useState(""); // State to store the user ID
   const [buttonText, setButtonText] = useState("Update");
+  const [connectedUsers, setConnectedUsers] = useState<string[]>([]);
 
   const { clearSession } = useAuth0();
 
@@ -101,6 +102,7 @@ export default function account() {
             setLastName(userProfile.lastname);
             setUsername(userProfile.username);
             setEmail(userProfile.email);
+            setConnectedUsers(userProfile.connectedUsers);
           }
 
         })
@@ -122,12 +124,15 @@ export default function account() {
           return;
         }
         else {
-          await UpdateUser(id, {
+          const UpdatedUser: UserInfo = {
+            _id: id,
             username: userName,
             email: user?.email ?? "",
             firstname: Firstname,
             lastname: Lastname,
-          })
+            connectedUsers: connectedUsers
+          }
+          await UpdateUser(id, UpdatedUser)
         }
 
       }

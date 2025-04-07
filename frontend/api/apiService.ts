@@ -25,6 +25,17 @@ export const GetUser = async (email: string) => {
   }
 };
 
+
+//get user by username
+export const GetUserByUsername = async (username: string) => {
+  try {
+    const response = await api.get(`/user/getUserByUsername/${username}`);
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+};
+
 //update user
 export const UpdateUser = async (userId: string, userInfo: UserInfo) => {
   try {

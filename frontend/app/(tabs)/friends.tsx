@@ -4,14 +4,16 @@ import { HelloWave } from '@/components/HelloWave';
 import ParallaxScrollView from '@/components/ParallaxScrollView';
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
-import { GetDebtWithAllConnectedUser, GetUser } from "@/api/apiService";
+import { GetDebtWithAllConnectedUser, GetUser, GetUserByUsername, UpdateUser } from "@/api/apiService";
 import { useAuth0 } from "react-native-auth0";
 import { useEffect, useState } from "react";
 import { Collapsible } from '@/components/Collapsible';
 import DebtSummaryForm from '@/components/ui/DebtSummaryForm';
 import { ScrollView } from 'react-native';
-import { debtSummary } from '@/api/apiInterface';
+import { debtSummary, UserInfo } from '@/api/apiInterface';
 import { useRouter } from 'expo-router';
+import { IconSymbol } from '@/components/ui/IconSymbol';
+import { TextInput } from 'react-native';
 
 
 
@@ -34,7 +36,67 @@ export default function Friends() {
   const { user } = useAuth0();
   const [data, setData] = useState<debtSummary[]>([]);
   const router = useRouter();
+  const [userProfile, setUserProfile] = useState<UserInfo>();
 
+  const [searchQuery, setSearchQuery] = useState("");
+  const [filteredFriends, setFilteredFriends] = useState<UserInfo>();
+
+  const handleSearch = (query: string) => {
+    setSearchQuery(query);
+    if (query.trim() === "") {
+      setFilteredFriends(undefined); // Clear the filtered friends if the search query is empty
+      return;
+    }
+    GetUserByUsername(query.toLowerCase())
+      .then((response) => {
+        if (response) {
+          setFilteredFriends(response);
+        }
+      })
+      .catch((error) => {
+      });
+  };
+
+
+  const handleAddFriend = (friend: UserInfo) => {
+    console.log(`Add friend with ID: ${friend._id}`);
+    if (userProfile) {
+      const updatedFriend: UserInfo = {
+        _id: friend._id,
+        username: friend.username,
+        email: friend.email,
+        firstname: friend.firstname,
+        lastname: friend.lastname,
+        connectedUsers: [...friend.connectedUsers, userProfile._id]
+      }
+      UpdateUser(friend._id, updatedFriend)
+        .then(() => {
+          console.log("user added to friend successfully");
+
+        }
+        ).catch((error) => {
+          console.error("Error adding user to friend:", error);
+        });
+
+      const updatedUser: UserInfo = {
+        _id: userProfile._id,
+        username: userProfile.username,
+        email: userProfile.email,
+        firstname: userProfile.firstname,
+        lastname: userProfile.lastname,
+        connectedUsers: [...userProfile.connectedUsers, friend._id]
+      }
+      UpdateUser(userProfile._id, updatedFriend)
+        .then(() => {
+          console.log("Friend added to user successfully");
+
+        }
+        ).catch((error) => {
+          console.error("Error adding friend to user:", error);
+        });
+    }
+
+  };
 
 
   useEffect(() => {
@@ -43,6 +105,7 @@ export default function Friends() {
       checkUserExists(Email)
         .then((userProfile) => {
           if (userProfile) {
+            setUserProfile(userProfile);
             const borrowerIds = userProfile.connectedUsers;
             GetDebtWithAllConnectedUser(userProfile._id, borrowerIds)
               .then((expenseData) => {
@@ -72,8 +135,79 @@ export default function Friends() {
           style={styles.reactLogo}
         />
       }>
-      <ThemedText>Your all shared expenses.</ThemedText>
+      <ThemedView style={styles.titleContainer}>
 
+        <TextInput
+          style={styles.textInput}
+          placeholder='Add friend'
+          value={searchQuery}
+          editable={true}
+          selectTextOnFocus={true}
+          onChangeText={setSearchQuery}
+        />
+        <Pressable onPress={() => handleSearch(searchQuery)}>
+          <IconSymbol
+            name="magnifyingglass.circle.fill"
+            size={30}
+            color="rgba(0, 0, 0, 0.65)"
+            style={{ marginRight: 8 }}
+          />
+        </Pressable>
+
+      </ThemedView>
+      {filteredFriends && (
+        <ThemedView style={styles.dropdown}>
+          <ScrollView>
+            {Array.isArray(filteredFriends) ? (
+              filteredFriends.map((friend) => (
+                <ThemedView key={friend._id} style={styles.dropdownItem}>
+                  <ThemedText>{friend.username}</ThemedText>
+                  {!userProfile?.connectedUsers.includes(friend._id) && (
+                    <Pressable
+                      style={styles.addButton}
+                      onPress={() => handleAddFriend(friend)}
+                    >
+                      <ThemedText style={styles.addButtonText}>Add</ThemedText>
+                    </Pressable>
+                  )}
+                  <ThemedView>
+                    <Pressable
+                      style={[styles.buttonShadowBox, styles.Button]}
+                      onPress={() => { setFilteredFriends(undefined) }}
+                    >
+                      <ThemedText style={[styles.buttonText]}>Clear Results</ThemedText>
+                    </Pressable>
+                  </ThemedView>
+                </ThemedView>
+              ))
+            ) : (
+              <ThemedView key={filteredFriends._id} style={styles.dropdownItem}>
+                <ThemedText style={{ marginLeft: 8 }}>{filteredFriends.username}</ThemedText>
+                {!userProfile?.connectedUsers.includes(filteredFriends._id) && (
+                  <Pressable
+                    style={styles.addButton}
+                    onPress={() => handleAddFriend(filteredFriends)}
+                  >
+                    <ThemedText style={styles.addButtonText}>Add</ThemedText>
+                  </Pressable>
+                )}
+
+              </ThemedView>
+            )}
+            <ThemedView style={{ backgroundColor: '#A1CEDC' }}>
+              <Pressable
+                style={[styles.buttonShadowBox, styles.Button]}
+                onPress={() => { setFilteredFriends(undefined) }}
+              >
+                <ThemedText style={[styles.buttonText]}>Clear Results</ThemedText>
+              </Pressable>
+            </ThemedView>
+          </ScrollView>
+        </ThemedView>
+      )}
+
+
+      <ThemedText>Your all shared expenses.</ThemedText>
       <ThemedView style={styles.stepContainer}>
         <ThemedView style={styles.container}>
           {data.length > 0 ? (
@@ -95,6 +229,18 @@ export default function Friends() {
 }
 
 const styles = StyleSheet.create({
+  textInput: {
+    height: 40,
+    borderColor: "#ccc",
+    borderWidth: 1,
+    borderRadius: 8,
+    paddingHorizontal: 10,
+    marginTop: 10,
+    marginBottom: 20,
+    width: "95%",
+    backgroundColor: "#fff",
+    color: "rgba(0, 0, 0, 0.65)",
+  },
   buttonShadowBox: {
     width: 200,
     backgroundColor: "#fff",
@@ -144,6 +290,7 @@ const styles = StyleSheet.create({
   titleContainer: {
     flexDirection: 'row',
     alignItems: 'center',
+    justifyContent: 'space-between',
     gap: 8,
   },
   stepContainer: {
@@ -156,5 +303,34 @@ const styles = StyleSheet.create({
     bottom: 0,
     left: 0,
     position: 'absolute',
+  },
+  dropdown: {
+    backgroundColor: "#A1CEDC",
+    borderRadius: 8,
+    padding: 8,
+    marginTop: 0,
+    maxHeight: 200,
+    overflow: "hidden",
+    // zIndex: 1000, // Ensure the dropdown is above other elements
+    // position: "absolute", // Ensure it floats above other content
+  },
+  dropdownItem: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    paddingVertical: 8,
+    borderBottomWidth: 1,
+    borderBottomColor: "#ccc",
+  },
+  addButton: {
+    backgroundColor: "#4CAF50",
+    paddingVertical: 4,
+    paddingHorizontal: 8,
+    borderRadius: 4,
+    marginRight: 8,
+  },
+  addButtonText: {
+    color: "#fff",
+    fontSize: 14,
   },
 });
