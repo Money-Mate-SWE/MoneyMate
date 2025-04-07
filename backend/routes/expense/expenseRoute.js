@@ -1,5 +1,6 @@
 import express from 'express';
 import expenseController from '../../Controller/expenseController.js';
+import openAIController from '../../Controller/OpenAIController.js'; // Import OpenAI controller
 const router = express.Router();
 
 router.post('/newExpense', expenseController.createExpense);
@@ -13,5 +14,6 @@ router.delete('/deleteExpense/:expenseId', expenseController.deleteExpense);
 router.delete('/deleteExpenseItem/:expenseItemId', expenseController.deleteExpenseItem);
 router.get('/getexpenseByUser/:user', expenseController.getExpenseByUser);
 
+router.get('/getFeedbackByUser/:user', openAIController.getFeedbackByUser); // New route for OpenAI feedback
 
 export default router;
