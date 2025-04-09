@@ -55,7 +55,7 @@ open Xcode and open Device and Simulator using the shortucut "cmd" + "shift" + 2
 
 Wait till your device is connected and all the cache are loaded.
 
-Now run all the steps mentioned in [Run Front-end](## Run Front-End) except the last one. The last command should be 
+Now run all the steps mentioned in [Run Front-end](#Run-Front-End) except the last one. The last command should be 
 
 ```bash
 npx expo run:ios --device
