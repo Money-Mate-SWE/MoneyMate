@@ -56,7 +56,17 @@ export default function addBillLayout() {
                         color: "#000",
                     },
                 }} />
-
+                <Stack.Screen name="camera" options={{
+                    headerShown: true,
+                    title: "Take a picture",
+                    headerBackButtonMenuEnabled: false,
+                    headerStyle: {
+                        backgroundColor: "#728e96",
+                    },
+                    headerTitleStyle: {
+                        color: "#000",
+                    },
+                }} />
             </Stack>
             <StatusBar style="auto" />
         </ThemeProvider>

@@ -36,7 +36,7 @@ export function AddButton(props: any) {
                                 color="rgba(0, 0, 0, 0.65)"
                                 style={{ marginRight: 8 }}
                             />
-                            <ThemedText style={styles.option} onPress={() => { setModalVisible(false); }}>
+                            <ThemedText style={styles.option} onPress={() => { setModalVisible(false); router.push("/(addBill)/camera") }}>
                                 Scan Bill
                             </ThemedText>
                         </ThemedView>
