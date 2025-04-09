@@ -44,7 +44,24 @@ Now type in "npm run ios" in your terminal to open iOS simulator
 npm run ios
 ```
 
-Note: Expo Go mobile app will not since we are in bare workflow and not in expo managed workflow
+Note: Expo Go mobile app will not work since we are in bare workflow and not in expo managed workflow
+
+### Run Front-End on your physical device
+Make sure to turn on developer mode in your iPhone and restart the device.
+
+Plugin your phone to your mac via USB.
+
+open Xcode and open Device and Simulator using the shortucut "cmd" + "shift" + 2.
+
+Wait till your device is connected and all the cache are loaded.
+
+Now run all the steps mentioned in [Run Front-end](## Run Front-End) except the last one. The last command should be 
+
+```bash
+npx expo run:ios --device
+```
+
+Then select your device from the list and it will install the app in your phone.
 
 ## Run Back-End
 
