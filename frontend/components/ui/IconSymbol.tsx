@@ -16,6 +16,10 @@ const MAPPING = {
   'chevron.left.forwardslash.chevron.right': 'code',
   'chevron.right': 'chevron-right',
   'magnifyingglass.circle.fill': 'search',
+  'camera.fill': 'camera-alt',
+  'square.and.arrow.up.circle.fill': 'upload',
+  'pencil.circle.fill': 'edit',
+  'xmark.circle.fill': 'cancel',
 } as Partial<
   Record<
     import('expo-symbols').SymbolViewProps['name'],

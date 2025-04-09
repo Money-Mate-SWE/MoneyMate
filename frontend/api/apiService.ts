@@ -1,10 +1,11 @@
+import { Platform } from "react-native";
 import api from "./api";
-import {UserInfo, expenseBill, expenseBillItem } from "@/api/apiInterface";
+import {UserInfo, expenseBill, expenseBillItem, ImageFile } from "@/api/apiInterface";
 
 //User api
 
 //create user info
-export const CreateUser = async (userInfo: UserInfo) => {
+export const CreateUser = async (userInfo: any) => {
   try {
     const response = await api.post(`/user/newUser`, userInfo);
     return response.data;
@@ -30,6 +31,16 @@ export const GetUser = async (email: string) => {
 export const GetUserByUsername = async (username: string) => {
   try {
     const response = await api.get(`/user/getUserByUsername/${username}`);
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+};
+
+//get user by id
+export const GetUserByUserId = async (id: string) => {
+  try {
+    const response = await api.get(`/user/getUserById/${id}`);
     return response.data;
   } catch (error) {
     throw error;
@@ -91,8 +102,29 @@ export const UpdateExpense = async (expenseId: string, expenseInfo: any ) => {
     throw error;
   }
 }
+//create expense
+export const CreateExpense = async (expenseBillData: any, expenseItemData: any) => {
+  try {
+    const response = await api.post(`/expense/newExpense`, {expenseBillData, expenseItemData});
+    return response.data;
+  } catch (error) {
+    console.error("Error creating expense info:", error);
+    throw error;
+  }
+}
 
 //Debt
+
+//create debt
+export const CreateDebt = async (debtBillData: any, debtItemData:any) => {
+  try {
+    const response = await api.post(`/debt/newDebt`, {debtBillData, debtItemData});
+    return response.data;
+  } catch (error) {
+    console.error("Error creating debt info:", error);
+    throw error;
+  }
+}
 
 //get debt by users
 export const GetDebtWithAllConnectedUser = async (userId: string, borrowerIds: JSON) => {  
@@ -147,6 +179,53 @@ export const GetDebtItemsById = async (debtId: string) => {
     return response.data;
   } catch (error) {
     console.error("Error getting debt info:", error);
+    throw error;
+  }
+}
+
+//payment
+export const CreatePayment = async (paymentData: any) => {
+  try {
+    const response = await api.post(`/debt/processPayment`, paymentData);
+    return response.data;
+  } catch (error) {
+    console.error("Error creating payment info:", error);
+    throw error;
+  }
+}
+
+//ocr
+export const uploadReceiptImage = async (imageFile: ImageFile) => {
+  const formData = new FormData();
+
+  // React Native FormData expects `uri`, `type`, and `name` for files
+  formData.append('image', {
+    uri: Platform.OS === 'ios' ? imageFile.uri.replace('file://', '') : imageFile.uri,
+    type: imageFile.type || 'image/jpeg',
+    name: imageFile.fileName || 'receipt.jpg',
+  } as any); 
+
+  try {
+    const response = await api.post('/ocr/performOCR', formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    });
+    return response.data;
+  } catch (error: any) {
+    console.error('OCR Upload Error:', error?.response?.data || error.message);
+    throw error;
+  }
+};
+
+
+//OpenAi
+export const getFeedback = async (id: string) => {
+  try {
+    const response = await api.get(`/expense/getFeedbackByUser/${id}`);
+    return response.data;
+  } catch (error) {
+    console.error("Error getting feedback:", error);
     throw error;
   }
 }

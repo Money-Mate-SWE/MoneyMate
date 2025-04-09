@@ -75,7 +75,7 @@ export default function Authenticate() {
           alert("User is not authenticated.");
           return;
         }
-        const newUser: UserInfo = {
+        const newUser: any = {
           username: userName,
           email: user?.email ?? "",
           firstname: Firstname,

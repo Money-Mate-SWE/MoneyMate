@@ -7,6 +7,24 @@ export interface UserInfo {
     connectedUsers: string[];
 }
 
+export interface UserInfoWithConnectedUsers {
+    _id: string;
+    username: string;
+    email: string;
+    firstname: string;
+    lastname: string;
+    connectedUsers: connectedUsers[];
+}
+
+export interface connectedUsers {
+    _id: string;
+    username: string;
+    email: string;
+    firstname: string;
+    lastname: string;
+    connectedUsers: connectedUsers[];
+}
+
 export interface expenseBill {
     _id: string;
     user: string;
@@ -60,3 +78,9 @@ export interface debtSummary {
     debts: debtBill[];
     debtsOwed: debtBill[];
 }
+
+export interface ImageFile {
+    uri: string;
+    type?: string;
+    fileName?: string | null;
+  }

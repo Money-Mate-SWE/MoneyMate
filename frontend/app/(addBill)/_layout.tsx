@@ -17,37 +17,15 @@ import { Header } from "react-native/Libraries/NewAppScreen";
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
 
-export default function DebtsLayout() {
+export default function addBillLayout() {
     const colorScheme = useColorScheme();
 
     return (
         <ThemeProvider value={colorScheme === "light" ? DarkTheme : DefaultTheme}>
             <Stack >
-                <Stack.Screen name="debts" options={{
+                <Stack.Screen name="bill" options={{
                     headerShown: true,
-                    title: "All Shared Expenses",
-                    headerBackButtonDisplayMode: "minimal",
-                    headerStyle: {
-                        backgroundColor: "#728e96",
-                    },
-                    headerTitleStyle: {
-                        color: "#000",
-                    },
-                }} />
-                <Stack.Screen name="debtDetail" options={{
-                    headerShown: true,
-                    title: "Details",
-                    headerBackButtonDisplayMode: "minimal",
-                    headerStyle: {
-                        backgroundColor: "#728e96",
-                    },
-                    headerTitleStyle: {
-                        color: "#000",
-                    },
-                }} />
-                <Stack.Screen name="pay" options={{
-                    headerShown: true,
-                    title: "Payment",
+                    title: "Check/Modify Bill",
                     headerBackButtonDisplayMode: "minimal",
                     headerStyle: {
                         backgroundColor: "#728e96",
@@ -57,8 +35,28 @@ export default function DebtsLayout() {
                     },
                 }} />
                 <Stack.Screen name="complete" options={{
-                    headerShown: false,
+                    headerShown: true,
+                    title: "Bill added",
+                    headerBackButtonMenuEnabled: false,
+                    headerStyle: {
+                        backgroundColor: "#728e96",
+                    },
+                    headerTitleStyle: {
+                        color: "#000",
+                    },
                 }} />
+                <Stack.Screen name="upload" options={{
+                    headerShown: true,
+                    title: "Upload",
+                    headerBackButtonMenuEnabled: false,
+                    headerStyle: {
+                        backgroundColor: "#728e96",
+                    },
+                    headerTitleStyle: {
+                        color: "#000",
+                    },
+                }} />
+
             </Stack>
             <StatusBar style="auto" />
         </ThemeProvider>

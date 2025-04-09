@@ -16,7 +16,12 @@ export const calculateAutoDueAmounts = async (billId) => {
             item.borrower.forEach(borrower => {
                 borrower.due = amountPerBorrower;
                 const existingDue = participantDueMap.get(borrower.person._id.toString()) || 0;
-                participantDueMap.set(borrower.person._id.toString(), existingDue + amountPerBorrower);
+                if (borrower.person._id.toString() === debtBill.lender.toString()) {
+                    participantDueMap.set(borrower.person._id.toString(), existingDue + 0);
+                } else {
+                    participantDueMap.set(borrower.person._id.toString(), existingDue + amountPerBorrower);
+                }
+
             });
         }
     });

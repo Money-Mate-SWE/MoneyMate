@@ -135,7 +135,20 @@ export default function debts() {
             >
                 <ThemedText style={[styles.buttonText]}>{buttonText}</ThemedText>
             </Pressable>
-
+            {type === "You owe" && (
+                <Pressable
+                    style={[styles.buttonShadowBox, styles.Button, { marginBottom: 10 }]}
+                    onPress={() => {
+                        router.push({
+                            pathname: "/(debt)/pay",
+                            params: { friendId: Array.isArray(ConnectedId) ? ConnectedId[0] : ConnectedId }
+                        })
+                    }
+                    }
+                >
+                    <ThemedText style={[styles.buttonText]}>Pay</ThemedText>
+                </Pressable>
+            )}
             <Pressable
                 style={[styles.buttonShadowBox, styles.Button]}
                 onPress={() => {

@@ -21,7 +21,7 @@ const expenseBillSchema = new mongoose.Schema({
     },
     CardType: {
         type: String,
-        required: true
+        required: false
     },
 
     amount: {

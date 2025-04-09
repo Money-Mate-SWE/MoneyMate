@@ -1,0 +1,13 @@
+{
+  "type": "service_account",
+  "project_id": "sustained-path-455020-s8",
+  "private_key_id": "f558239aff873d12629bf7e897e33b00e69fc2aa",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQDESY6m4kh/P+0T\nUWuklB80ar9qdlUNHS+Z00EIT2IQr/VEMeGWdKDXBKfZltp+aqSXuiyK5HNO/Uoy\n0FxYa/6g96EBh95XJwcZpAUiMFpJNSc3n9nyI2fqmi8LaR47wq8eki27Ikwz/meq\nfUHgLqIl/0JpR7fmfUmZJ3VA+lEPv8DPgFp16SyAk9OxxOfFf+N52OnIaZnF2Ari\n413UBpUa0KVGGgjo4qcY/mUOYcFcDq6gjwzj2rW8W3fo/CAVbIbehMNPP5iqUw0X\nVTmt89O6DCD+zE/7aM8qofxfOnQxklNKn/aPsCPPb2ONDFykSes5swYnjTXBMBhK\nE12RbT7VAgMBAAECggEABKXPO0Fc02A7w+jVkASOtE8+eTKB8y/mXv9sMiOtVvmr\nn41APWZp/WaFUhJq/nJM/LC7efve8s4SsgzkiJaXwM9DFzOwLEdmy0ez4fySrrXK\ns24eUhE51lK+JNqqjPSygqy6slVuo3w+j231sf/dP3QT6iCv0bKv5Tn5K0eiDim5\nxFQSoGLaUMt87sWvOOVuCYts908Af+9WSLBgZ/PKLGNkt+Uq/PjIAG0E6eQxNDAh\nXAhs4z/RcbJNPN+OOUnBDyYSLQWTzc2trywUCzxGl1qY1TnxQbVuJai1hpKgExNK\nuWX9/xRfgtc+I0nrP6pVkZ9ElRYQGMHUaf2JRY+SAwKBgQDq+E/rDJLty9HMbQ+V\nvW/sOx7Fea6Vn9XnmxupisGfWKnQgM24jXEKuRbW/N0IFKRnmeEB7hrufZZ/089d\nhvYsDg30DdY9TLmthZ3Q9qxkKHGZ8uq3lqRPMUdKZEXagk4y1Up/3t7AqJwh0zQM\n3SlJ3n/XW+j7jOb15eGX3EejlwKBgQDV2vB1FhCwJYZLefZ/LFS4/wTcOT4O/PIW\ndJorFPn+xGEqjiVRQ9sIJi9I9dI4j++B59qcJCSOO8JmOCK9Wa/cUis/ES+3Z2Tt\nIJvh0uHvt96VKzc32Ubx+l4qHYcC9kvm1xc6WLWfMIE++aTkspYuSMMKEPnmVZMq\nmVLIP6eOcwKBgGn+Bzb1XhYMuh/oFn6qjKFYbeIQqNNv3XLzgf/xyrPRsBCQ+bvF\nefenVIk4WZB6l0rwnBJd0SJB3rDc4A7FgaiP0nWEBF90i9Gdk3oeu9cWc2BJtt2I\nA6iBhzIkl2ohG5tMoaWa6IqpxHxxpGolHannx21jVW6bude0khYJ1PsTAoGBAMaV\ndT60y7BWWBuUWMKFLvNO1HuPqEIQvtj9U//3jaH3R+dVce/BnA44LyaIJrshZZ3y\n5/ygT1XIxl9Xd2Lveq+TmdcJpY6gs4bDBh2wTt/klQtdwvvYhtnCzVg8bRfiEF9+\nknI62ATH7OzGs0kvUOgP5xVc6EHsaylekRGkknpjAoGAXLd96CQJo+S5nJ12IPkY\n0Id5l1Ahkar7qUaywmlbv246o6dXBE6iauLsNp+fSigQ87+GfbiNkydfmqEHvvPd\nSmT8wDaUILJIS0QEgffuQmM6I9h0U7bVs/OUvvJxSzXVc6NgnYhfQ4t6I6+AS1nc\nuIJr9sFbXcdVLlxLHx914IY=\n-----END PRIVATE KEY-----\n",
+  "client_email": "moneymate@sustained-path-455020-s8.iam.gserviceaccount.com",
+  "client_id": "114343421406583557839",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/moneymate%40sustained-path-455020-s8.iam.gserviceaccount.com",
+  "universe_domain": "googleapis.com"
+}

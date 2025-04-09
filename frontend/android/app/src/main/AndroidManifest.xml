@@ -1,6 +1,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android" package="android.moneymate" xmlns:tools="http://schemas.android.com/tools">
   <uses-permission android:name="android.permission.INTERNET"/>
   <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
+  <uses-permission android:name="android.permission.RECORD_AUDIO"/>
   <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW"/>
   <uses-permission android:name="android.permission.VIBRATE"/>
   <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
@@ -33,6 +34,7 @@
         <action android:name="android.intent.action.VIEW"/>
         <category android:name="android.intent.category.DEFAULT"/>
         <category android:name="android.intent.category.BROWSABLE"/>
+        <data android:scheme="android.moneymate.auth0" android:host="dev-2sc4okx2cibmjc8r.us.auth0.com"/>
         <data android:scheme="android.moneymate.auth0" android:host="dev-2sc4okx2cibmjc8r.us.auth0.com"/>
         <data android:scheme="android.moneymate.auth0" android:host="dev-2sc4okx2cibmjc8r.us.auth0.com"/>
         <data android:scheme="android.moneymate.auth0" android:host="dev-2sc4okx2cibmjc8r.us.auth0.com"/>

@@ -7,6 +7,7 @@ import { IconSymbol } from '@/components/ui/IconSymbol';
 import TabBarBackground from '@/components/ui/TabBarBackground';
 import { Colors } from '@/constants/Colors';
 import { useColorScheme } from '@/hooks/useColorScheme';
+import { AddButton } from '@/components/ui/AddButton';
 
 export default function TabLayout() {
   const colorScheme = useColorScheme();
@@ -52,6 +53,7 @@ export default function TabLayout() {
         options={{
           title: 'Add',
           tabBarIcon: ({ color }) => <IconSymbol size={28} name="figure.wave.circle.fill" color={color} />,
+          tabBarButton: (props) => <AddButton {...props} />,
         }}
       />
     </Tabs>

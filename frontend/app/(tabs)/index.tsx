@@ -4,7 +4,7 @@ import { HelloWave } from '@/components/HelloWave';
 import ParallaxScrollView from '@/components/ParallaxScrollView';
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
-import { GetExpense, GetUser } from "@/api/apiService";
+import { GetExpense, GetUser, getFeedback } from "@/api/apiService";
 import { useAuth0 } from "react-native-auth0";
 import { useEffect, useState } from "react";
 import { Collapsible } from '@/components/Collapsible';
@@ -12,6 +12,7 @@ import FormComponent from '@/components/ui/FormComponent';
 import { ScrollView } from 'react-native';
 import { expenseBill } from '@/api/apiInterface';
 import { useRouter } from 'expo-router';
+
 
 
 
@@ -35,6 +36,7 @@ export default function HomeScreen() {
   const [Firstname, setFirstName] = useState("");
   const [id, setId] = useState("");
   const [data, setData] = useState<expenseBill[]>([]);
+  const [feedbackData, setFeedbackData] = useState<string>('');
   const router = useRouter();
 
   const goToNewPage = () => {
@@ -60,10 +62,19 @@ export default function HomeScreen() {
             ).catch((error) => {
               console.error("Error getting expense data:", error);
             });
-        })
+          getFeedback(userProfile._id)
+            .then((feedbackData) => {
+              setFeedbackData(feedbackData.feedback);
+            })
+            .catch((error) => {
+              console.error("Error getting feedback data:", error);
+            });
+        }
+        )
         .catch((error) => {
           console.error("Error checking user existence:", error);
         });
+
 
     }
   }, [user]);
@@ -82,23 +93,21 @@ export default function HomeScreen() {
         <HelloWave />
       </ThemedView>
       <ThemedText>Welcome to the Moneymate!</ThemedText>
-      {/* <ThemedText>Check you recent transaction and stay on top of</ThemedText>
-      <ThemedText>your finance today!</ThemedText> */}
+      <ThemedText>Check you recent transaction and stay on top of your finances today!</ThemedText>
 
       <ThemedView style={styles.stepContainer}>
         <ThemedText type="subtitle">Budget Insights</ThemedText>
+        <ThemedView style={styles.container}>
+          <ThemedView style={{ backgroundColor: '#EEFCFF', padding: 16, borderRadius: 8 }}>
+            <ThemedText >
+              {feedbackData}
+            </ThemedText>
+
+          </ThemedView>
+
+        </ThemedView>
       </ThemedView>
-      {/* <Collapsible title="File-based routing">
-        <ThemedText>
-          This app has two screens:{' '}
-          <ThemedText type="defaultSemiBold">app/(tabs)/index.tsx</ThemedText> and{' '}
-          <ThemedText type="defaultSemiBold">app/(tabs)/explore.tsx</ThemedText>
-        </ThemedText>
-        <ThemedText>
-          The layout file in <ThemedText type="defaultSemiBold">app/(tabs)/_layout.tsx</ThemedText>{' '}
-          sets up the tab navigator.
-        </ThemedText>
-      </Collapsible> */}
+
       <ThemedView style={styles.stepContainer}>
         <ThemedText type="subtitle">Recent Transactions</ThemedText>
         <ThemedView style={styles.container}>

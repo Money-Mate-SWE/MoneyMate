@@ -1,7 +1,7 @@
 # macOS system files
 .DS_Store
 backend/node_modules
-backend/api_key
+# backend/api_key
 
 # # Learn more https://docs.github.com/en/get-started/getting-started-with-git/ignoring-files
 
