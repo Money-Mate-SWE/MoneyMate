@@ -20,6 +20,7 @@ const MAPPING = {
   'square.and.arrow.up.circle.fill': 'upload',
   'pencil.circle.fill': 'edit',
   'xmark.circle.fill': 'cancel',
+  'plus.circle.fill': 'add-circle',
 } as Partial<
   Record<
     import('expo-symbols').SymbolViewProps['name'],
