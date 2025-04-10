@@ -22,7 +22,7 @@ const createDebt = async (req, res) => {
     }
 
     for (const item of debtItemData) {
-        if (!item?.item || !item?.amount || !item?.borrower) {
+        if (!item?.item || !item?.amount) {
             return res.status(400).json({
                 message: "Please enter all required Item fields!"
             });

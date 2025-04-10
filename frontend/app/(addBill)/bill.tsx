@@ -66,7 +66,7 @@ export default function Bill() {
     };
 
     const handleRemoveLastForm = () => {
-        setFormItems((prev) => prev.slice(0, -1));
+        setFormItems((prev) => (prev.length > 1 ? prev.slice(0, -1) : prev));
     };
 
     const onSubmit = () => {
@@ -83,15 +83,31 @@ export default function Bill() {
                 amount: total,
                 description: description,
                 lender: userId,
-                participant: formItems.length === 0
+                ...(formItems.length === 0
                     ? billParticipant
-                    : [...new Set(formItems.map(item => item.splitTo))].map(user => ({ person: user }))
+                        .filter((userId) => userId && userId.trim() !== "")
+                        .map((userId) => ({ person: userId })).length > 0 && {
+                        participant: billParticipant
+                            .filter((userId) => userId && userId.trim() !== "")
+                            .map((userId) => ({ person: userId })),
+                    }
+                    : [...new Set(formItems.flatMap((item) => item.splitTo))]
+                        .filter((userId) => userId && userId.trim() !== "")
+                        .map((userId) => ({ person: userId })).length > 0 && {
+                        participant: [...new Set(formItems.flatMap((item) => item.splitTo))]
+                            .filter((userId) => userId && userId.trim() !== "")
+                            .map((userId) => ({ person: userId })),
+                    }),
             };
-            const debtItemData = formItems.map(item => ({
-                item: item.name,
-                amount: item.amount,
-                borrower: item.splitTo.map(userId => ({ person: userId }))
-            }));
+            const debtItemData = formItems.map(item => {
+                const borrowers = item.splitTo.filter(userId => userId && userId.trim() !== "");
+                return {
+                    item: item.name,
+                    amount: item.amount,
+                    ...(borrowers.length > 0 && { borrower: borrowers.map(userId => ({ person: userId })) })
+                }
+
+            });
 
             //For expense
             const expenseBillData = {
@@ -108,8 +124,11 @@ export default function Bill() {
                 quantity: item.quantity,
                 amount: item.amount,
             }));
+
+            console.log("Debt", JSON.stringify(debtBillData));
+            console.log("Item", JSON.stringify(debtItemData));
             if (expenseItemData.length === 0) {
-                if (debtBillData.participant.length === 0) {
+                if (!debtBillData.participant || debtBillData.participant.length === 0) {
                     CreateExpense(expenseBillData, [])
                         .then((result) => {
                             if (result) {
@@ -123,7 +142,7 @@ export default function Bill() {
                 }
                 else {
                     //Create debt and expense
-                    CreateDebt(debtBillData, "")
+                    CreateDebt(debtBillData, [])
                         .then((result) => {
                             if (result) {
                                 console.log("Expense", expenseBillData);
@@ -146,7 +165,7 @@ export default function Bill() {
                 }
             }
             else {
-                if (debtBillData.participant.length === 0) {
+                if (!debtBillData.participant || debtBillData.participant.length === 0) {
                     CreateExpense(expenseBillData, expenseItemData)
                         .then((result) => {
                             if (result) {
@@ -424,10 +443,10 @@ export default function Bill() {
                                             editable={false}
                                         />
 
-                                        <SplitToSelector data={connectedUser} onChangeSelected={(selectedUsers) =>
+                                        <SplitToSelector data={connectedUser} onChangeSelected={(updatedId) =>
                                             setFormItems((prev) =>
                                                 prev.map((i) =>
-                                                    i.id === item.id ? { ...i, splitTo: selectedUsers } : i
+                                                    i.id === item.id ? { ...i, splitTo: updatedId.filter((id) => id && id.trim() !== "") } : i
                                                 )
                                             )
                                         } />

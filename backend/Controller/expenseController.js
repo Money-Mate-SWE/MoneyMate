@@ -13,11 +13,11 @@ const createExpense = async (req, res) => {
         });
     }
 
-    // if (!expenseItemData || expenseItemData.length < 1) {
-    //     return res.status(400).json({
-    //         message: "Please enter at least one Expense Item!"
-    //     });
-    // }
+    if (!expenseItemData || expenseItemData.length < 1) {
+        return res.status(400).json({
+            message: "Please enter at least one Expense Item!"
+        });
+    }
 
     try {
         const { savedExpense, savedExpenseItem } = await ExpenseService.createExpense(expenseBillData, expenseItemData);

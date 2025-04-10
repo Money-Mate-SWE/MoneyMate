@@ -13,6 +13,7 @@ type SplitToSelectorProps = {
 
 export default function SplitToSelector({ data, onChangeSelected }: SplitToSelectorProps) {
     const [selectedUsers, setSelectedUsers] = useState<string[]>([]);
+    const [selectedId, setSelectedId] = useState<string[]>([]);
 
     const toggleUser = (user: connectedUsers) => {
         const updated = selectedUsers.includes(user.username)
@@ -21,10 +22,10 @@ export default function SplitToSelector({ data, onChangeSelected }: SplitToSelec
 
         setSelectedUsers(updated);
 
-        const updatedId = selectedUsers.includes(user._id)
-            ? selectedUsers.filter((u) => u !== user._id)
-            : [...selectedUsers, user._id];
-
+        const updatedId = selectedId.includes(user._id)
+            ? selectedId.filter((u) => u !== user._id)
+            : [...selectedId, user._id];
+        setSelectedId(updatedId);
         onChangeSelected(updatedId);
     };
 

@@ -8,13 +8,16 @@ class DebtService {
             const newDebt = new DebtBill(debtBillData);
             const savedDebt = await newDebt.save();
 
-            const debtItemsWithBillId = debtItemData.map(item => ({
-                ...item,
-                BillId: savedDebt._id
-            }));
+            if (debtItemData.length > 0) {
+                const debtItemsWithBillId = debtItemData.map(item => ({
+                    ...item,
+                    BillId: savedDebt._id
+                }));
 
-            const savedDebtItem = await DebtItem.insertMany(debtItemsWithBillId);
-            return { savedDebt, savedDebtItem };
+                const savedDebtItem = await DebtItem.insertMany(debtItemsWithBillId);
+                return { savedDebt, savedDebtItem };
+            }
+            return { savedDebt };
         } catch (error) {
             console.error("Error creating debt:", error);
             throw error;
