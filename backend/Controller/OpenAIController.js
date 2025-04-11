@@ -9,9 +9,9 @@ const getFeedbackByUser = async (req, res) => {
         const expenses = await expenseService.findExpenseItemsByUserId(userId);
         // console.log("Fetched expenses:", expenses); this is for debugging to see what data is being sent to OpenAI
 
-        if (!expenses || expenses.length === 0) {
-            return res.status(404).json({ message: "No expenses found for this user." });
-        }
+        // if (!expenses || expenses.length === 0) {
+        //     return res.status(404).json({ message: "No expenses found for this user." });
+        // }
 
         // Prepare data
         const requestData = {
@@ -31,7 +31,7 @@ const getFeedbackByUser = async (req, res) => {
                 {
                     role: "user",
                     content: `Here is the user's expense data: ${JSON.stringify(requestData)}. 
-                    Based on this, give a short, clear summary (no more than 5 lines) in one single paragraph.
+                    Based on this, give a short, clear summary (no more than 5 lines, and if you can't find data give generic finance feedback) in one single paragraph.
                     Avoid any numbered lists or line breaks. No bullet points. Just plain text.`,
                 },
             ],
