@@ -69,10 +69,10 @@ export default function Authenticate() {
       />
       <ThemedText style={[styles.moneyMate]}>MONEY MATE</ThemedText>
       <Image
-        source={require("@/assets/images/react-logo.png")}
+        source={require("@/assets/images/Moneymate.png")}
         style={styles.image}
       />
-      <ThemedText style={[styles.welcomeBack]}>Welcome Back</ThemedText>
+      {/* <ThemedText style={[styles.welcomeBack]}>Welcome Back</ThemedText> */}
       {LoginButton()}
     </ThemedView>
   );
@@ -96,7 +96,7 @@ const styles = StyleSheet.create({
     position: "absolute",
   },
   image: {
-    top: "15%",
+    top: "25%",
     width: 300, // Set the width of the image
     height: 300, // Set the height of the image
     resizeMode: "contain", // Ensure the image scales properly
@@ -136,7 +136,7 @@ const styles = StyleSheet.create({
   moneyMate: {
     top: "10%",
     left: 233,
-    color: "#fff",
+    color: "#728e96",
     width: 191,
     height: 25,
     fontSize: 24,

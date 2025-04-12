@@ -155,12 +155,13 @@ export default function account() {
 
   return (
     <ParallaxScrollView
-      headerBackgroundColor={{ light: "#D0D0D0", dark: "#353636" }}
+      headerBackgroundColor={{ light: '#A1CEDC', dark: '#1D3D47' }}
       headerImage={
-        <LinearGradient
-          style={styles.friends}
-          locations={[0.32, 0.81, 0.94]}
-          colors={["#728e96", "#9dc5cf", "#bff0fc"]} //
+        <Image
+          source={require('@/assets/images/Moneymate.png')}
+          style={styles.reactLogo}
+          resizeMode="center"
+
         />
       }
     >
@@ -301,5 +302,13 @@ const styles = StyleSheet.create({
   },
   signout: {
     backgroundColor: "#D9534F",
+  },
+  reactLogo: {
+    height: 220,
+    width: 290,
+    top: 50,
+    bottom: 0,
+    left: '20%',
+    position: 'absolute',
   },
 });
