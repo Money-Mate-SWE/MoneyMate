@@ -159,6 +159,7 @@ const updateUser = async (req, res) => {
     if (req.body.email) updateData.email = req.body.email.trim();
     if (req.body.firstname) updateData.firstname = req.body.firstname.trim();
     if (req.body.lastname) updateData.lastname = req.body.lastname.trim();
+    if (req.body.connectedUsers) updateData.connectedUsers = req.body.connectedUsers;
 
     if (!updateData.firstname && !updateData.lastname) {
         return res.status(400).json({

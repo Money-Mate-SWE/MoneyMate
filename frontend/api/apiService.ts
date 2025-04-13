@@ -9,7 +9,11 @@ export const CreateUser = async (userInfo: any) => {
   try {
     const response = await api.post(`/user/newUser`, userInfo);
     return response.data;
-  } catch (error) {
+  } catch (error: any) {
+    if (error.response && error.response.status === 409) {
+      // Handle conflict error (user already exists)
+      alert("User already exists.");
+    }
     console.error("Error updating user info:", error);
     throw error;
   }

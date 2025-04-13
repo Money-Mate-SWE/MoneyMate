@@ -86,7 +86,7 @@ export default function Friends() {
         lastname: userProfile.lastname,
         connectedUsers: [...userProfile.connectedUsers, friend._id]
       }
-      UpdateUser(userProfile._id, updatedFriend)
+      UpdateUser(userProfile._id, updatedUser)
         .then(() => {
           console.log("Friend added to user successfully");
 

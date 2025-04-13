@@ -218,7 +218,7 @@ const styles = StyleSheet.create({
   moneyMate: {
     top: "10%",
     left: 233,
-    color: "#fff",
+    color: "#728e96",
     width: 191,
     height: 25,
     fontSize: 24,
