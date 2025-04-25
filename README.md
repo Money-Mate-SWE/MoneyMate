@@ -2,7 +2,30 @@
 
 # How to Run this locally in the machine
 
+## Requirements
+1. We have only run this and worked on this using macbook. So testing on macbook is preferred. 
+2. Have node installed in your device.
+3. Have latest Xcode installed in your device.
+4. Make sure you have the latest iOS simulator insatlled within the Xcode.
+
+## Run Back-End
+
+1. Go inside backend folder.
+```bash
+cd backend
+```
+2. download all the necessary packages by typing "npm i"
+```bash
+npm i
+```
+3. run by typing "npm run dev"
+```bash
+npm run dev
+```
+
 ## Run Front-End
+
+Open new terminal.
 
 Type this in your terminal:
 
@@ -12,15 +35,15 @@ npm install -g expo-cli
 
 Type : "expo --version" To make sure expo is installed correctly
 
-If not installed or required elevated persmission:
+If not installed or required elevated persmission:   
 For Windows: - open powershell as administrator - then run
-`bash
-        npm install -g expo-cli
-        `
+`
+npm install -g expo-cli
+`   
 For Mac: - run
-`bash
-            sudo npm install -g expo-cli
-        `
+`
+sudo npm install -g expo-cli
+`
 
 Go to frontend folder:
 
@@ -32,8 +55,9 @@ Then run 'npm install' to install all the dependencies
 
 ```bash
 npm install
-```
+```  
 
+Now run 'npm expo prebuild' to generate native iOS directories.   
 ```bash
 npx expo prebuild
 ```
@@ -44,18 +68,19 @@ Now type in "npm run ios" in your terminal to open iOS simulator
 npm run ios
 ```
 
-Note: Expo Go mobile app will not work since we are in bare workflow and not in expo managed workflow
 
-### Run Front-End on your physical device
+### To run Front-End on your physical device (optional)
 Make sure to turn on developer mode in your iPhone and restart the device.
 
 Plugin your phone to your mac via USB.
 
-open Xcode and open Device and Simulator using the shortucut "cmd" + "shift" + 2.
+Open Xcode and open Device and Simulator using the shortucut "cmd" + "shift" + 2.
 
 Wait till your device is connected and all the cache are loaded.
 
-Now run all the steps mentioned in [Run Front-end](#Run-Front-End) except the last one. The last command should be 
+Change web address of backend from local host to your mac ip address since we are communicating from frontend in mobile to backend in mac.
+
+Now run all the steps mentioned in [Run Front-end](#run-front-end) except the last one. The last command should be 
 
 ```bash
 npx expo run:ios --device
@@ -63,13 +88,7 @@ npx expo run:ios --device
 
 Then select your device from the list and it will install the app in your phone.
 
-## Run Back-End
 
-    after cloning
-    run cd backend
-    1- download all the necessary packages by typing "npm i"
-    2- run by typing npm run dev
-    3- if it does not tun contact Kritan/Suvanga
 
 # How to Work on a GitHub Repository
 
